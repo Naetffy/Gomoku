@@ -72,6 +72,13 @@ public abstract class Game {
 		}
 		return res;
 	}
+	
+	public String getPlayerOne() {
+		return playerOne.getName();
+	}
+	public String getPlayerTwo() {
+		return playerTwo.getName();
+	}
 	public abstract void start(int especialPercentage);
 
 }

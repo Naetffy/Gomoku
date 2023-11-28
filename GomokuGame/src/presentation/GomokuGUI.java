@@ -25,6 +25,7 @@ public class GomokuGUI extends JFrame{
     private JMenuItem menuClose;
     
     //Start
+    public JPanel start;
     private JButton startButton;
     
     private JComboBox<String> gameMode;
@@ -66,7 +67,8 @@ public class GomokuGUI extends JFrame{
         int y = (screenSize.height - HIGH)/2;
         setLocation(x,y);
         setJMenuBar(prepareElementsMenu()); 
-        getContentPane().add(prepareElementsStart());
+        prepareElementsStart();
+        getContentPane().add(start);
 	}
 	
 	private JMenuBar prepareElementsMenu() {
@@ -90,36 +92,12 @@ public class GomokuGUI extends JFrame{
 		
 	}
 	
-	private JPanel prepareElementsStart() {
-		JPanel start =  new JPanel();
+	public void prepareElementsStart() {
+		start =  new JPanel();
 		start.setLayout(new BorderLayout());
-		startButton =new JButton("Start new game");
+		startButton = new JButton("Start new game");
 		start.add(startButton,BorderLayout.CENTER);
-		return start;
 	}
-	
-	private void prepareElementsGame() {
-        getContentPane().removeAll();
-        
-        state = new GomokuState(this);
-        player1 = new JPanel();
-        player2 = new JPanel();
-
-        getContentPane().setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        getContentPane().add(state, gbc);
-
-        gbc.gridx = 1;
-        getContentPane().add(player1, gbc);
-
-        gbc.gridx = 2;
-        getContentPane().add(player2, gbc);
-        
-        getContentPane().revalidate();
-        getContentPane().repaint();
-    }
 	
 	private JPanel prepareElementsStartConfig() {
 		JPanel config = new JPanel();
@@ -201,6 +179,71 @@ public class GomokuGUI extends JFrame{
 		createGame = new JButton("Create the game"); 
 		start.add(createGame);
 		return start;
+	}
+	
+	private void prepareElementsGame() {
+        getContentPane().removeAll();
+        
+        state = new GomokuState(this);
+        player1 = new JPanel();
+        player2 = new JPanel();
+        prepareElementsPlayer1();
+        prepareElementsPlayer2();
+
+        getContentPane().setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        getContentPane().add(player1, gbc);
+
+        gbc.gridx = 1;
+        getContentPane().add(state, gbc);
+        
+
+        gbc.gridx = 2;
+        getContentPane().add(player2, gbc);
+        
+        getContentPane().revalidate();
+        getContentPane().repaint();
+    }
+	
+	private void prepareElementsPlayer1() {
+		player1 = new JPanel();
+		player1.setLayout(new BoxLayout(player1, BoxLayout.Y_AXIS));
+		player1.add(new JLabel(gomoku.getPlayerOne()));
+		JPanel tokens = new JPanel();
+		tokens.setLayout(new GridLayout(3,2));
+		tokens.setBorder(new CompoundBorder(new EmptyBorder(0,0,0,0),
+				 new TitledBorder("Tokens player one")));
+		ImageIcon img1 = new ImageIcon("src/resources/images/Normal.png"); 
+		tokens.add(new JLabel(img1));
+		tokens.add(new JLabel("Normal token"));
+		ImageIcon img2 = new ImageIcon("src/resources/images/Heavy.png"); 
+		tokens.add(new JLabel(img2));
+		tokens.add(new JLabel("Heavy token"));
+		ImageIcon img3 = new ImageIcon("src/resources/images/Temporary.png"); 
+		tokens.add(new JLabel(img3));
+		tokens.add(new JLabel("Temporary token"));
+		player1.add(tokens);
+	}
+	private void prepareElementsPlayer2() {
+		player2 = new JPanel();
+		player2.setLayout(new BoxLayout(player2, BoxLayout.Y_AXIS));
+		player2.add(new JLabel(gomoku.getPlayerOne()));
+		JPanel tokens = new JPanel();
+		tokens.setLayout(new GridLayout(3,2));
+		tokens.setBorder(new CompoundBorder(new EmptyBorder(0,0,0,0),
+				 new TitledBorder("Tokens player one")));
+		ImageIcon img1 = new ImageIcon("src/resources/images/Normal.png"); 
+		tokens.add(new JLabel(img1));
+		tokens.add(new JLabel("Normal token"));
+		ImageIcon img2 = new ImageIcon("src/resources/images/Heavy.png"); 
+		tokens.add(new JLabel(img2));
+		tokens.add(new JLabel("Heavy token"));
+		ImageIcon img3 = new ImageIcon("src/resources/images/Temporary.png"); 
+		tokens.add(new JLabel(img3));
+		tokens.add(new JLabel("Temporary token"));
+		player2.add(tokens);
 	}
 	
 	private void prepareActions(){
@@ -416,9 +459,25 @@ class GomokuState extends JPanel{
                             gomoku.play(x,y);
                             buttons[x][y].setBackground(gomoku.getTokenColor(x,y));
                             circular = true;
+                            String winner = gomoku.getWinner();
+                            if (winner != null) {
+                            	JOptionPane.showMessageDialog(null, "The winner is: " +winner);
+                            	gui.getContentPane().removeAll();
+                            	gui.add(gui.start);
+                            	gui.revalidate();
+                            	gui.repaint();
+                            }
             			}
             			else {
-            				System.out.println("Already circle");
+            				Timer timer = new Timer(1000, new ActionListener() {
+            		            public void actionPerformed(ActionEvent evt) {
+            		            	JOptionPane.getRootFrame().dispose();
+            		            	}
+            		            });
+            		        	timer.setRepeats(false);
+            		        	timer.start();
+            		        	JOptionPane.showMessageDialog(null, "Invalid game size");
+            		        	timer.restart();
             			}
             		}
             	});
