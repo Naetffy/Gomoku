@@ -6,8 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public class NormalPlayer extends Player{
 
-	public void play() {
-		
+	public int[] play() {
+		return null;
 	}
 	
 	public void play(String typeToken, int row, int column) {
@@ -15,8 +15,8 @@ public class NormalPlayer extends Player{
 		Class<?> clazz;
 		try {
 			clazz = Class.forName(type);
-			Constructor<?> constructor = clazz.getConstructor(Color.class);
-			Object tokenInstance = constructor.newInstance(color);
+			Constructor<?> constructor = clazz.getConstructor(Color.class,int.class,int.class);
+			Object tokenInstance = constructor.newInstance(color,row,column);
 			Token actualToken =  (Token) tokenInstance;
 			int quantity = quantitys.get(typeToken);
 			quantitys.put(typeToken, quantity-1);

@@ -2,6 +2,13 @@ package domain;
 
 public class ExpertMachine extends Machine {
 
-	public void play() {
+	public int[] play() {
+		return miniMax();
 	}
+	
+	public int[] miniMax() {
+		//Implementar miniMax para experta
+		return null;
+	}
+	
 }

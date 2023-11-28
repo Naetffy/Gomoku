@@ -4,15 +4,18 @@ import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public abstract class Player {
 	private String name;
 	protected Color color;
 	protected Board board;
 	protected HashMap<String,Integer> quantitys;
+	protected LinkedList<Token> tokens;
 	
 	public Player() {
 		quantitys = new HashMap<>();
+		LinkedList<Token> tokens = new LinkedList();
 	}
 
 	public void setInfo(String namePlayer,Color color) {
@@ -36,5 +39,5 @@ public abstract class Player {
 		return quantitys;
 	}
 	
-	public abstract void play();
+	public abstract int[] play();
 }

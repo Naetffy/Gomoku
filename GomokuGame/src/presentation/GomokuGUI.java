@@ -4,6 +4,7 @@ import domain.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -210,39 +211,41 @@ public class GomokuGUI extends JFrame{
 	private void prepareElementsPlayer1() {
 		player1 = new JPanel();
 		player1.setLayout(new BoxLayout(player1, BoxLayout.Y_AXIS));
-		player1.add(new JLabel(gomoku.getPlayerOne()));
+		Player playerOne = gomoku.getPlayerOne();
+		HashMap<String,Integer> map = playerOne.getMap(); 
 		JPanel tokens = new JPanel();
 		tokens.setLayout(new GridLayout(3,2));
 		tokens.setBorder(new CompoundBorder(new EmptyBorder(0,0,0,0),
-				 new TitledBorder("Tokens player one")));
+				 new TitledBorder("Tokens"+playerOne.getName())));
 		ImageIcon img1 = new ImageIcon("src/resources/images/Normal.png"); 
 		tokens.add(new JLabel(img1));
-		tokens.add(new JLabel("Normal token"));
+		tokens.add(new JLabel("Normal token: "+map.get("Normal")));
 		ImageIcon img2 = new ImageIcon("src/resources/images/Heavy.png"); 
 		tokens.add(new JLabel(img2));
-		tokens.add(new JLabel("Heavy token"));
+		tokens.add(new JLabel("Heavy token: "+map.get("Heavy")));
 		ImageIcon img3 = new ImageIcon("src/resources/images/Temporary.png"); 
 		tokens.add(new JLabel(img3));
-		tokens.add(new JLabel("Temporary token"));
+		tokens.add(new JLabel("Temporary token: "+map.get("Temporary")));
 		player1.add(tokens);
 	}
 	private void prepareElementsPlayer2() {
 		player2 = new JPanel();
 		player2.setLayout(new BoxLayout(player2, BoxLayout.Y_AXIS));
-		player2.add(new JLabel(gomoku.getPlayerOne()));
+		Player playerTwo = gomoku.getPlayerTwo();
+		HashMap<String,Integer> map = playerTwo.getMap(); 
 		JPanel tokens = new JPanel();
 		tokens.setLayout(new GridLayout(3,2));
 		tokens.setBorder(new CompoundBorder(new EmptyBorder(0,0,0,0),
-				 new TitledBorder("Tokens player one")));
+				 new TitledBorder("Tokens"+playerTwo.getName())));
 		ImageIcon img1 = new ImageIcon("src/resources/images/Normal.png"); 
 		tokens.add(new JLabel(img1));
-		tokens.add(new JLabel("Normal token"));
+		tokens.add(new JLabel("Normal token: "+map.get("Normal")));
 		ImageIcon img2 = new ImageIcon("src/resources/images/Heavy.png"); 
 		tokens.add(new JLabel(img2));
-		tokens.add(new JLabel("Heavy token"));
+		tokens.add(new JLabel("Heavy token: "+map.get("Heavy")));
 		ImageIcon img3 = new ImageIcon("src/resources/images/Temporary.png"); 
 		tokens.add(new JLabel(img3));
-		tokens.add(new JLabel("Temporary token"));
+		tokens.add(new JLabel("Temporary token: "+map.get("Temporary")));
 		player2.add(tokens);
 	}
 	
@@ -476,7 +479,7 @@ class GomokuState extends JPanel{
             		            });
             		        	timer.setRepeats(false);
             		        	timer.start();
-            		        	JOptionPane.showMessageDialog(null, "Invalid game size");
+            		        	JOptionPane.showMessageDialog(null, "The square is already visited");
             		        	timer.restart();
             			}
             		}

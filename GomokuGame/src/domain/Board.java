@@ -31,8 +31,7 @@ public class Board {
 	}
 	
 	public void setToken(Token token, int row, int column) {
-		if (verify(row,column))
-			boardSquares[row][column].setToken(token);
+		boardSquares[row][column].setToken(token);
 	}
 	
 	public Color getTokenColor(int row, int column) {
@@ -50,6 +49,12 @@ public class Board {
 		return winner;
 	}
 	
+	public boolean verify(int r, int c) {
+		boolean flag = false;
+		if (0 <= r && r < size && 0 <= c && c < size) flag = true;
+		return flag;
+	}
+	
 	private boolean diagonalMove(int row, int column) {
 		int up = 0;
 		while (verify(row-up-1,column-up-1) &&
@@ -60,7 +65,7 @@ public class Board {
 				boardSquares[row+dw+1][column+dw+1].getTokenColor() == boardSquares[row][column].getTokenColor()) 
 			dw++;
 		boolean winner = false; 
-		if (up + dw >= 4) {
+		if (up + dw == 4) {
 			winner = true;
 		}
 		return winner;
@@ -76,7 +81,7 @@ public class Board {
 				boardSquares[row+dw+1][column-dw-1].getTokenColor() == boardSquares[row][column].getTokenColor()) 
 			dw++;
 		boolean winner = false; 
-		if (up + dw >= 4) {
+		if (up + dw == 4) {
 			winner = true;
 		}
 		return winner;
@@ -93,7 +98,7 @@ public class Board {
 				boardSquares[row][column+rg+1].getTokenColor() == boardSquares[row][column].getTokenColor()) 
 			rg++;
 		boolean winner = false; 
-		if (lf + rg >= 4) {
+		if (lf + rg == 4) {
 			winner = true;
 		}
 		return winner;
@@ -110,15 +115,11 @@ public class Board {
 				boardSquares[row+dw+1][column].getTokenColor() == boardSquares[row][column].getTokenColor()) 
 			dw++;
 		boolean winner = false; 
-		if (up + dw >= 4) {
+		if (up + dw == 4) {
 			winner = true;
 		}
 		return winner;
 	}
 
-	private boolean verify(int r, int c) {
-		boolean flag = false;
-		if (0 <= r && r < size && 0 <= c && c < size) flag = true;
-		return flag;
-	}
+	
 }

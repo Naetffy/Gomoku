@@ -69,10 +69,10 @@ public class Gomoku {
 	public HashMap<String,Integer> getPlayerTokens(){
 		return game.getPlayerTokens();
 	}
-	public String getPlayerOne() {
+	public Player getPlayerOne() {
 		return game.getPlayerOne();
 	}
-	public String getPlayerTwo() {
+	public Player getPlayerTwo() {
 		return game.getPlayerTwo();
 	}
 

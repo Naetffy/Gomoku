@@ -10,14 +10,14 @@ public abstract class Game {
 	protected int especialPercentage;
 	protected Player playerOne;
 	protected Player playerTwo;
-	private boolean turn;
 	private String winner;
+	private int turn;
 	
 	public Game (int size, int especialPercentage) {
 		this.size = size;
 		this.board = new Board(size,especialPercentage);
 		this.especialPercentage = especialPercentage;
-		turn = true;
+		turn = 0;
 		winner = null;
 	}
 	
@@ -43,9 +43,9 @@ public abstract class Game {
 	}
 
 	public void play(int row, int column) {
-		if(board.getTokenColor(row, column)==null) {
+		if(board.getTokenColor(row, column) == null && board.verify(row, column)) {
 			String player;
-			if (turn) {
+			if ((turn % 2) == 0) {
 				((NormalPlayer)playerOne).play("Normal",row,column);
 				player = playerOne.getName();
 			}
@@ -53,7 +53,7 @@ public abstract class Game {
 				((NormalPlayer)playerTwo).play("Normal",row,column);
 				player = playerTwo.getName();
 			}
-			turn = !turn;
+			turn+=1;
 			if(board.validate(row,column))winner = player;
 		}
 	}
@@ -64,7 +64,7 @@ public abstract class Game {
 	
 	public HashMap<String,Integer> getPlayerTokens(){
 		HashMap<String,Integer> res;
-		if (!turn) {
+		if ((turn % 2) != 0) {
 			res = playerOne.getMap();
 		}
 		else {
@@ -73,11 +73,11 @@ public abstract class Game {
 		return res;
 	}
 	
-	public String getPlayerOne() {
-		return playerOne.getName();
+	public Player getPlayerOne() {
+		return playerOne;
 	}
-	public String getPlayerTwo() {
-		return playerTwo.getName();
+	public Player getPlayerTwo() {
+		return playerTwo;
 	}
 	public abstract void start(int especialPercentage);
 
