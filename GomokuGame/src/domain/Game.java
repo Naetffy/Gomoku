@@ -1,6 +1,8 @@
 package domain;
 
 import java.awt.Color;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 public abstract class Game {
@@ -20,27 +22,6 @@ public abstract class Game {
 		turn = 0;
 		winner = null;
 	}
-	
-	public int getSize() {
-		return size;
-	}
-	
-	
-	public void setPlayers(Player playerOne, Player playerTwo) {
-		this.playerOne = playerOne;
-		this.playerOne.setBoard(board);
-		this.playerTwo = playerTwo;
-		this.playerTwo.setBoard(board);
-		start(especialPercentage);
-	}
-
-	public void setPlayersInfo(String nameOne, Color color1, String nameTwo, Color color2) {
-		playerOne.setInfo(nameOne,color1);
-		playerTwo.setInfo(nameTwo,color2);
-	}
-	public Color getTokenColor(int row, int column) {
-		return board.getTokenColor(row, column);
-	}
 
 	public void play(int row, int column) {
 		if(board.getTokenColor(row, column) == null && board.verify(row, column)) {
@@ -58,8 +39,53 @@ public abstract class Game {
 		}
 	}
 	
+	public void setPlayers(String player1, String player2) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		if (player1 == "Normal") {
+			playerOne = new NormalPlayer(); 
+		}
+		else{
+			String type = "domain."+player1+"Machine";
+			Class<?> clazz = Class.forName(type);
+			Constructor<?> constructor = clazz.getConstructor();
+			Object machineInstance = constructor.newInstance();
+			playerOne =  (Player) machineInstance;
+		}
+		if (player2 == "Normal") {
+			playerTwo = new NormalPlayer(); 
+		}
+		else{
+			String type = "domain."+player2+"Machine";
+			Class<?> clazz = Class.forName(type);
+			Constructor<?> constructor = clazz.getConstructor();
+			Object machineInstance = constructor.newInstance();
+			playerTwo =  (Player) machineInstance;
+		}
+		start(especialPercentage);
+	}
+	
+	public void setPlayersInfo(String nameOne, Color color1, String nameTwo, Color color2) {
+		playerOne.setInfo(nameOne,color1);
+		playerTwo.setInfo(nameTwo,color2);
+	}
+	
+	public int getSize() {
+		return size;
+	}
+	
 	public String getWinner() {
 		return winner;
+	}
+	
+	public Player getPlayerOne() {
+		return playerOne;
+	}
+	
+	public Player getPlayerTwo() {
+		return playerTwo;
+	}
+	
+	public Color getTokenColor(int row, int column) {
+		return board.getTokenColor(row, column);
 	}
 	
 	public HashMap<String,Integer> getPlayerTokens(){
@@ -73,12 +99,6 @@ public abstract class Game {
 		return res;
 	}
 	
-	public Player getPlayerOne() {
-		return playerOne;
-	}
-	public Player getPlayerTwo() {
-		return playerTwo;
-	}
 	public abstract void start(int especialPercentage);
 
 }
