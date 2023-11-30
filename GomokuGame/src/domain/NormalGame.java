@@ -5,25 +5,36 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Random;
 
-public class NormalGame extends Game{
-	
-	public NormalGame(int size,int especialPercentage) {
-		super(size,especialPercentage);
+public class NormalGame extends Game {
+
+	public NormalGame(int size, int especialPercentage) {
+		super(size, especialPercentage);
 	}
-	
+
 	public void start(int especialPercentage) {
-		int numSpecials = (size*size)*especialPercentage/100;
+		int numSpecials = (size * size) * especialPercentage / 100;
+		int num = size*size - numSpecials;
+		playerOne.setQuantityTypeOfToken("Normal", num);
+		playerTwo.setQuantityTypeOfToken("Normal", num);
 		Random random = new Random();
-		playerOne.setTypeOfToken("Normal", size*size-numSpecials);
-		playerTwo.setTypeOfToken("Normal", size*size-numSpecials);
-		int num = 0;
-		if (numSpecials!=0) num = random.nextInt(numSpecials);
-		playerOne.setTypeOfToken("Heavy", num);
-		playerTwo.setTypeOfToken("Heavy", num);
-		playerOne.setTypeOfToken("Temporary", numSpecials-num);
-		playerTwo.setTypeOfToken("Temporary", numSpecials-num);
+		String lastName = null;
+		for (Class typeOfToken : Token.getTokenSubtypes()) {
+			String tokenName = typeOfToken.getSimpleName();
+			if (numSpecials != 0) {
+				num = random.nextInt(numSpecials);
+				numSpecials -= num;
+			}
+			if(!tokenName.equals("Normal")) {
+				playerOne.setQuantityTypeOfToken(tokenName, num);
+				playerTwo.setQuantityTypeOfToken(tokenName, num);
+				lastName = tokenName;
+			}
+		}
+		if (numSpecials != 0) {
+			playerOne.setQuantityTypeOfToken(lastName, numSpecials);
+			playerTwo.setQuantityTypeOfToken(lastName, numSpecials);
+		}
 		
 	}
 
-	
 }

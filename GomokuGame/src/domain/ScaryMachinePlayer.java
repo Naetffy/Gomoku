@@ -1,12 +1,13 @@
 package domain;
 
-public class AggressiveMachine extends Machine {
+public class ScaryMachinePlayer extends MachinePlayer {
 	public int[] play() {
 		return miniMax();
 	}
-	
+
 	public int[] miniMax() {
-		// Implementar 
+		// Implemantar el minimax
 		return null;
 	}
+
 }

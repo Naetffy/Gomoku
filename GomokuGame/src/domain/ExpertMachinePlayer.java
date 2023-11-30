@@ -1,14 +1,14 @@
 package domain;
 
-public class ExpertMachine extends Machine {
+public class ExpertMachinePlayer extends MachinePlayer {
 
 	public int[] play() {
 		return miniMax();
 	}
-	
+
 	public int[] miniMax() {
-		//Implementar miniMax para experta
+		// Implementar miniMax para experta
 		return null;
 	}
-	
+
 }

@@ -4,9 +4,12 @@ import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Set;
+
+import org.reflections.Reflections;
 
 public abstract class Game {
-	
+
 	private Board board;
 	protected int size;
 	protected int especialPercentage;
@@ -14,91 +17,131 @@ public abstract class Game {
 	protected Player playerTwo;
 	private String winner;
 	private int turn;
+	public static Set<Class> subTypes = null;
 	
-	public Game (int size, int especialPercentage) {
+	public static Set<Class> getGameSubtypes() {
+		if (subTypes == null) {
+			Reflections reflections = new Reflections("domain");
+	        Set subTypesGet = reflections.getSubTypesOf(Game.class);
+	        subTypes = (Set<Class>)subTypesGet;
+		}
+        return subTypes;
+    }
+
+	public Game(int size, int especialPercentage) {
 		this.size = size;
-		this.board = new Board(size,especialPercentage);
+		this.board = new Board(size, especialPercentage);
 		this.especialPercentage = especialPercentage;
 		turn = 0;
 		winner = null;
 	}
 
 	public void play(int row, int column) {
-		if(board.getTokenColor(row, column) == null && board.verify(row, column)) {
+		if (board.getTokenColor(row, column) == null && board.verify(row, column)) {
 			String player;
 			if ((turn % 2) == 0) {
-				((NormalPlayer)playerOne).play("Normal",row,column);
+				((NormalPlayer) playerOne).play("Normal", row, column);
 				player = playerOne.getName();
-			}
-			else {
-				((NormalPlayer)playerTwo).play("Normal",row,column);
+			} else {
+				((NormalPlayer) playerTwo).play("Normal", row, column);
 				player = playerTwo.getName();
 			}
-			turn+=1;
-			if(board.validate(row,column))winner = player;
+			turn += 1;
+			if (board.validate(row, column))
+				winner = player;
 		}
 	}
+
+	public void setToken(Token token,int row, int column) {
+		board.setToken(token,row,column);
+	}
+	public Board getBoard() {
+		return board;
+	}
+
+	public int getEspecialPercentage() {
+		return especialPercentage;
+	}
+
+	public int getTurn() {
+		return turn;
+	}
 	
-	public void setPlayers(String player1, String player2) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-		if (player1 == "Normal") {
-			playerOne = new NormalPlayer(); 
-		}
-		else{
-			String type = "domain."+player1+"Machine";
-			Class<?> clazz = Class.forName(type);
-			Constructor<?> constructor = clazz.getConstructor();
-			Object machineInstance = constructor.newInstance();
-			playerOne =  (Player) machineInstance;
-		}
-		if (player2 == "Normal") {
-			playerTwo = new NormalPlayer(); 
-		}
-		else{
-			String type = "domain."+player2+"Machine";
-			Class<?> clazz = Class.forName(type);
-			Constructor<?> constructor = clazz.getConstructor();
-			Object machineInstance = constructor.newInstance();
-			playerTwo =  (Player) machineInstance;
-		}
-		start(especialPercentage);
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	/**
+	 * Sets the players for a game based on the specified player types.
+	 *
+	 * @param typePlayer1 The type of the first player. Accepted values: "Normal," "AggressiveMachine," "ExpertMachine," or "ScaryMachine."
+	 * @param typePlayer2 The type of the second player. Accepted values: "Normal," "AggressiveMachine," "ExpertMachine," or "ScaryMachine."
+	 * @throws ClassNotFoundException If the specified player class is not found.
+	 * @throws InstantiationException If there is an issue instantiating the player class.
+	 * @throws IllegalAccessException If there is an illegal access exception while creating an instance.
+	 * @throws IllegalArgumentException If an illegal or inappropriate argument is passed.
+	 * @throws InvocationTargetException If an invocation target exception occurs during instantiation.
+	 * @throws NoSuchMethodException If a specified constructor method is not found.
+	 * @throws SecurityException If there is a security violation during the instantiation process.
+	 */
+	public void setPlayers(String typePlayer1, String typePlayer2)
+	        throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+	        IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	    // Instantiate and set the first player
+	    String type = "domain." + typePlayer1 + "Player";
+	    Class<?> clazz = Class.forName(type);
+	    Constructor<?> constructor = clazz.getConstructor();
+	    Object playerInstance = constructor.newInstance();
+	    playerOne = (Player) playerInstance;
+
+	    // Instantiate and set the second player
+	    type = "domain." + typePlayer2 + "Player";
+	    clazz = Class.forName(type);
+	    constructor = clazz.getConstructor();
+	    playerInstance = constructor.newInstance();
+	    playerTwo = (Player) playerInstance;
+
+	    playerOne.setGame(this);
+	    playerTwo.setGame(this);
+	    // Start the game with a specified special percentage
+	    start(especialPercentage);
 	}
 	
 	public void setPlayersInfo(String nameOne, Color color1, String nameTwo, Color color2) {
-		playerOne.setInfo(nameOne,color1);
-		playerTwo.setInfo(nameTwo,color2);
+		playerOne.setInfo(nameOne, color1);
+		playerTwo.setInfo(nameTwo, color2);
 	}
-	
+
 	public int getSize() {
 		return size;
 	}
-	
+
 	public String getWinner() {
 		return winner;
 	}
-	
+
 	public Player getPlayerOne() {
 		return playerOne;
 	}
-	
+
 	public Player getPlayerTwo() {
 		return playerTwo;
 	}
-	
+
 	public Color getTokenColor(int row, int column) {
 		return board.getTokenColor(row, column);
 	}
-	
-	public HashMap<String,Integer> getPlayerTokens(){
-		HashMap<String,Integer> res;
+
+	public HashMap<String, Integer> getPlayerTokens() {
+		HashMap<String, Integer> res;
 		if ((turn % 2) != 0) {
 			res = playerOne.getMap();
-		}
-		else {
+		} else {
 			res = playerTwo.getMap();
 		}
 		return res;
 	}
-	
+
 	public abstract void start(int especialPercentage);
 
 }
