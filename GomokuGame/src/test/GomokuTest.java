@@ -103,111 +103,117 @@ class GomokuTest {
 
 	@Test
 	void testPutSomeTokensInSomePositions() {
-		gomoku.play(0, 0);
-		gomoku.play(0, 1);
+		gomoku.play("Normal", 0, 0);
+		gomoku.play("Normal", 0, 1);
 		assertEquals(gomoku.getTokenColor(0, 0), new Color(0, 0, 0));
 		assertEquals(gomoku.getTokenColor(0, 1), new Color(255, 255, 255));
 	}
 
 	@Test
 	void testPutSomeTokensInSomePositionsAndNotChangeColor() {
-		gomoku.play(0, 0);
-		gomoku.play(0, 0);
+		gomoku.play("Normal", 0, 0);
+		gomoku.play("Normal", 0, 0);
 		assertEquals(gomoku.getTokenColor(0, 0), new Color(0, 0, 0));
 	}
 
 	@Test
 	void testNotPutSomeTokens() {
-		gomoku.play(-1, 0);
-		gomoku.play(20, 20);
+		gomoku.play("Normal", -1, 0);
+		gomoku.play("Normal", 20, 20);
 	}
 
 	@Test
 	void testAGameWithAWinner1() {
-		gomoku.play(0, 0);
-		gomoku.play(1, 0);
-		gomoku.play(0, 1);
-		gomoku.play(2, 0);
-		gomoku.play(0, 2);
-		gomoku.play(3, 0);
-		gomoku.play(0, 3);
-		gomoku.play(4, 0);
+		gomoku.play("Normal", 0, 0);
+		gomoku.play("Normal", 1, 0);
+		gomoku.play("Normal", 0, 1);
+		gomoku.play("Normal", 2, 0);
+		gomoku.play("Normal", 0, 2);
+		gomoku.play("Normal", 3, 0);
+		gomoku.play("Normal", 0, 3);
+		gomoku.play("Normal", 4, 0);
 		assertEquals(null, gomoku.getWinner());
-		gomoku.play(0, 4);
+		gomoku.play("Normal", 0, 4);
 		assertEquals("Mateo", gomoku.getWinner());
 	}
 
 	@Test
 	void testAGameWithAWinner2() {
-		gomoku.play(0, 0);
-		gomoku.play(1, 0);
-		gomoku.play(0, 1);
-		gomoku.play(2, 0);
-		gomoku.play(0, 2);
-		gomoku.play(3, 0);
-		gomoku.play(0, 3);
-		gomoku.play(4, 0);
-		gomoku.play(0, 5);
+		gomoku.play("Normal", 0, 0);
+		gomoku.play("Normal", 1, 0);
+		gomoku.play("Normal", 0, 1);
+		gomoku.play("Normal", 2, 0);
+		gomoku.play("Normal", 0, 2);
+		gomoku.play("Normal", 3, 0);
+		gomoku.play("Normal", 0, 3);
+		gomoku.play("Normal", 4, 0);
+		gomoku.play("Normal", 0, 5);
 		assertEquals(null, gomoku.getWinner());
-		gomoku.play(5, 0);
+		gomoku.play("Normal", 5, 0);
 		assertEquals("Murcia", gomoku.getWinner());
 	}
 
 	@Test
 	void testAGameWithAWinner3() {
-		gomoku.play(0, 0);
-		gomoku.play(1, 0);
-		gomoku.play(1, 1);
-		gomoku.play(2, 0);
-		gomoku.play(2, 2);
-		gomoku.play(3, 0);
-		gomoku.play(3, 3);
-		gomoku.play(4, 0);
+		gomoku.play("Normal", 0, 0);
+		gomoku.play("Normal", 1, 0);
+		gomoku.play("Normal", 1, 1);
+		gomoku.play("Normal", 2, 0);
+		gomoku.play("Normal", 2, 2);
+		gomoku.play("Normal", 3, 0);
+		gomoku.play("Normal", 3, 3);
+		gomoku.play("Normal", 4, 0);
 		assertEquals(null, gomoku.getWinner());
-		gomoku.play(4, 4);
+		gomoku.play("Normal", 4, 4);
 		assertEquals("Mateo", gomoku.getWinner());
 	}
 
 	@Test
 	void testAGameWithAWinner4() {
-		gomoku.play(0, 4);
-		gomoku.play(0, 0);
-		gomoku.play(1, 3);
-		gomoku.play(1, 1);
-		gomoku.play(2, 2);
-		gomoku.play(2, 9);
-		gomoku.play(3, 1);
-		gomoku.play(3, 3);
+		gomoku.play("Normal", 0, 4);
+		gomoku.play("Normal", 0, 0);
+		gomoku.play("Normal", 1, 3);
+		gomoku.play("Normal", 1, 1);
+		gomoku.play("Normal", 2, 2);
+		gomoku.play("Normal", 2, 9);
+		gomoku.play("Normal", 3, 1);
+		gomoku.play("Normal", 3, 3);
 		assertEquals(null, gomoku.getWinner());
-		gomoku.play(4, 0);
+		gomoku.play("Normal", 4, 0);
 		assertEquals("Mateo", gomoku.getWinner());
 	}
 
 	@Test
 	void testAGameWithAWinner5() {
-		gomoku.play(0, 4);
-		gomoku.play(0, 0);
-		gomoku.play(1, 3);
-		gomoku.play(1, 1);
-		gomoku.play(2, 2);
-		gomoku.play(2, 2);
-		gomoku.play(3, 1);
-		gomoku.play(3, 3);
+		gomoku.play("Normal", 0, 4);
+		gomoku.play("Normal", 0, 0);
+		gomoku.play("Normal", 1, 3);
+		gomoku.play("Normal", 1, 1);
+		gomoku.play("Normal", 2, 2);
+		gomoku.play("Normal", 2, 2);
+		gomoku.play("Normal", 3, 1);
+		gomoku.play("Normal", 3, 3);
 		assertEquals(null, gomoku.getWinner());
-		gomoku.play(4, 0);
+		gomoku.play("Normal", 4, 0);
 		assertEquals(null, gomoku.getWinner());
 	}
 
 	@Test
 	void testAGameAndTheNumberOfTokens() {
-		gomoku.play(0, 0);
+		gomoku.play("Normal", 0, 0);
 		assertEquals(99, gomoku.getPlayerTokens().get("Normal"));
-		gomoku.play(1, 0);
-		gomoku.play(0, 1);
-		gomoku.play(2, 0);
-		gomoku.play(0, 2);
-		gomoku.play(3, 0);
-		gomoku.play(0, 3);
-		gomoku.play(4, 0);
+		gomoku.play("Normal", 1, 0);
+		assertEquals(99, gomoku.getPlayerTokens().get("Normal"));
+		gomoku.play("Normal", 0, 1);
+		assertEquals(98, gomoku.getPlayerTokens().get("Normal"));
+		gomoku.play("Normal", 2, 0);
+		assertEquals(98, gomoku.getPlayerTokens().get("Normal"));
+		gomoku.play("Normal", 0, 2);
+		assertEquals(97, gomoku.getPlayerTokens().get("Normal"));
+		gomoku.play("Normal", 3, 0);
+		assertEquals(97, gomoku.getPlayerTokens().get("Normal"));
+		gomoku.play("Normal", 0, 3);
+		assertEquals(96, gomoku.getPlayerTokens().get("Normal"));
+		gomoku.play("Normal", 4, 0);
 	}
 }

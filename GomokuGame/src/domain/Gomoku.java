@@ -19,6 +19,10 @@ public class Gomoku {
 		game = (Game) gameInstance;
 	}
 
+	public void play(String token, int row, int column) {
+		game.play(token, row, column);
+	}
+
 	public void setPlayers(String typePlayer1, String typePlayer2)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException {
@@ -35,10 +39,6 @@ public class Gomoku {
 
 	public Game getGame() {
 		return game;
-	}
-
-	public void play(int row, int column) {
-		game.play(row, column);
 	}
 
 	public Color getTokenColor(int row, int column) {

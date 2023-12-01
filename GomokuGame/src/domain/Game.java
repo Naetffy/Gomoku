@@ -36,14 +36,14 @@ public abstract class Game {
 		winner = null;
 	}
 
-	public void play(int row, int column) {
-		if (board.getTokenColor(row, column) == null && board.verify(row, column)) {
+	public void play(String token, int row, int column) {
+		if (board.verify(row, column) && board.getTokenColor(row, column) == null) {
 			String player;
-			if ((turn % 2) == 0) {
-				((NormalPlayer) playerOne).play("Normal", row, column);
+			if ((turn % 2) == 0) {	
+				playerOne.play(token, row, column);
 				player = playerOne.getName();
 			} else {
-				((NormalPlayer) playerTwo).play("Normal", row, column);
+				playerTwo.play(token, row, column);
 				player = playerTwo.getName();
 			}
 			turn += 1;

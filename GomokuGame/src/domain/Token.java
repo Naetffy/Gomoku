@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.Set;
 import org.reflections.Reflections;
 
-public abstract class Token {
+public abstract class Token implements PlayToken{
 	private Color color;
 	int row;
 	int column;

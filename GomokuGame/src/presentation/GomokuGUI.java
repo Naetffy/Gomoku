@@ -449,7 +449,7 @@ class GomokuState extends JPanel {
 								buttons[x][y].setSize(size);
 							}
 							buttons[x][y].setContentAreaFilled(true);
-							gomoku.play(x, y);
+							gomoku.play("Normal",x, y);
 							buttons[x][y].setBackground(gomoku.getTokenColor(x, y));
 							circular = true;
 							String winner = gomoku.getWinner();

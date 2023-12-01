@@ -8,4 +8,10 @@ public class NormalToken extends Token {
 		super(color, row, column);
 	}
 
+	
+	public void act() {
+		AlertPlay alert = new AlertPlay();
+		alert.dettach(this);
+	}
+
 }
