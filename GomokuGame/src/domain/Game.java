@@ -8,6 +8,12 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
+/**
+ * The abstract Game class defines the common structure and behavior for Gomoku games.
+ * Subclasses must extend this class and implement the abstract methods to create specific games.
+ * @author mateo forero fuentes and juan daniel murcia
+ * @version 1.5.2
+ */
 public abstract class Game {
 
 	private Board board;
@@ -19,6 +25,11 @@ public abstract class Game {
 	private int turn;
 	public static Set<Class> subTypes = null;
 	
+	/**
+     * Retrieves a set of all classes that extends the Game class within the "domain" package.
+     *
+     * @return A set of Class objects representing the game subtypes.
+     */
 	public static Set<Class> getGameSubtypes() {
 		if (subTypes == null) {
 			Reflections reflections = new Reflections("domain");
@@ -28,6 +39,12 @@ public abstract class Game {
         return subTypes;
     }
 
+	/**
+	 * Constructs a Game object with the specified size and percentage of special elements.
+	 *
+	 * @param size               The size of the game board, indicating the dimensions.
+	 * @param especialPercentage The percentage of special elements in the game.
+	 */
 	public Game(int size, int especialPercentage) {
 		this.size = size;
 		this.board = new Board(size, especialPercentage);
@@ -35,7 +52,16 @@ public abstract class Game {
 		turn = 0;
 		winner = null;
 	}
-
+	
+	
+	/**
+	 * Plays a move in the game by placing a token at the specified row and column for the current player.
+	 * The player's turn alternates between Player One and Player Two.
+	 *
+	 * @param token  The player's token to be placed on the game board.
+	 * @param row    The row where the player wants to place the token.
+	 * @param column The column where the player wants to place the token.
+	 */
 	public void play(String token, int row, int column) {
 		token = token;
 		if (board.verify(row, column) && board.getTokenColor(row, column) == null) {
@@ -51,37 +77,65 @@ public abstract class Game {
 		}
 	}
 
+	/**
+	 * Sets the specified token at the given row and column on the game board.
+	 *
+	 * @param token  The token to be placed on the game board.
+	 * @param row    The row where the token will be placed.
+	 * @param column The column where the token will be placed.
+	 */
 	public void setToken(Token token,int row, int column) {
 		board.setToken(token,row,column);
 	}
+	
+	/**
+	 * Retrieves the game board associated with the current game instance.
+	 *
+	 * @return The Board object representing the game board.
+	 */
 	public Board getBoard() {
 		return board;
 	}
 
+	/**
+	 * Retrieves the percentage of special elements in the game.
+	 *
+	 * @return The percentage of special elements.
+	 */
 	public int getEspecialPercentage() {
 		return especialPercentage;
 	}
 
+	/**
+	 * Retrieves the current turn number in the game.
+	 *
+	 * @return The current turn number.
+	 */
 	public int getTurn() {
 		return turn;
 	}
 	
+	/**
+	 * Sets the size of the game board to the specified value.
+	 *
+	 * @param size The new size of the game board.
+	 */
 	public void setSize(int size) {
 		this.size = size;
 	}
 
 	/**
-	 * Sets the players for a game based on the specified player types.
+	 * Sets the players for the game based on the specified player types.
 	 *
-	 * @param typePlayer1 The type of the first player. Accepted values: "Normal," "AggressiveMachine," "ExpertMachine," or "ScaryMachine."
-	 * @param typePlayer2 The type of the second player. Accepted values: "Normal," "AggressiveMachine," "ExpertMachine," or "ScaryMachine."
-	 * @throws ClassNotFoundException If the specified player class is not found.
-	 * @throws InstantiationException If there is an issue instantiating the player class.
-	 * @throws IllegalAccessException If there is an illegal access exception while creating an instance.
-	 * @throws IllegalArgumentException If an illegal or inappropriate argument is passed.
-	 * @throws InvocationTargetException If an invocation target exception occurs during instantiation.
-	 * @throws NoSuchMethodException If a specified constructor method is not found.
-	 * @throws SecurityException If there is a security violation during the instantiation process.
+	 * @param typePlayer1 The type of player 1, represented as a String.
+	 * @param typePlayer2 The type of player 2, represented as a String.
+	 * @throws ClassNotFoundException    If the specified player type classes are not found.
+	 * @throws InstantiationException    If an instance of the player type cannot be created (abstract class or interface).
+	 * @throws IllegalAccessException    If the player type's constructor is not accessible due to access modifiers.
+	 * @throws IllegalArgumentException  If the provided arguments are not valid for the player type's constructor.
+	 * @throws InvocationTargetException If an exception occurs while invoking the player type's constructor.
+	 * @throws NoSuchMethodException     If a matching method is not found in the specified player type class.
+	 * @throws SecurityException         If a security violation occurs during reflection.
 	 */
 	public void setPlayers(String typePlayer1, String typePlayer2)
 	        throws ClassNotFoundException, InstantiationException, IllegalAccessException,
@@ -106,19 +160,49 @@ public abstract class Game {
 	    start(especialPercentage);
 	}
 	
+	/**
+	 * Sets the information for players in the game, including names and colors.
+	 *
+	 * @param nameOne  The name of player one.
+	 * @param color1   The color associated with player one.
+	 * @param nameTwo  The name of player two.
+	 * @param color2   The color associated with player two.
+	 */
 	public void setPlayersInfo(String nameOne, Color color1, String nameTwo, Color color2) {
 		playerOne.setInfo(nameOne, color1);
 		playerTwo.setInfo(nameTwo, color2);
 	}
-
+	
+	/**
+	 * Retrieves the size of the game board.
+	 *
+	 * @return The size of the game board.
+	 */
 	public int getSize() {
 		return size;
 	}
 	
+<<<<<<< HEAD
+=======
+	/**
+	 * Retrieves the name of the player who won the game.
+	 *
+	 * @return The name of the winner or null if there is no winner yet.
+	 */
+>>>>>>> branch 'master' of https://github.com/Naetffy/Gomoku
 	public String getWinner() {
 		return winner;
 	}
 	
+<<<<<<< HEAD
+=======
+	/**
+	 * Sets the winner of the game based on the last move's coordinates.
+	 *
+	 * @param row    The row of the last move.
+	 * @param column The column of the last move.
+	 */
+>>>>>>> branch 'master' of https://github.com/Naetffy/Gomoku
 	public void setWinner(int row,int column) {
 		String player = null;
 		if ((turn % 2) == 0) 
@@ -129,18 +213,40 @@ public abstract class Game {
 			winner = player;
 	}
 
+	/**
+	 * Retrieves information about player one in the game.
+	 *
+	 * @return The Player object representing player one.
+	 */
 	public Player getPlayerOne() {
 		return playerOne;
 	}
 
+	/**
+	 * Retrieves information about player two in the game.
+	 *
+	 * @return The Player object representing player two.
+	 */
 	public Player getPlayerTwo() {
 		return playerTwo;
 	}
 
+	/**
+	 * Retrieves the color of the token at the specified row and column on the game board.
+	 *
+	 * @param row    The row coordinate of the token.
+	 * @param column The column coordinate of the token.
+	 * @return The color of the token.
+	 */
 	public Color getTokenColor(int row, int column) {
 		return board.getTokenColor(row, column);
 	}
 
+	/**
+	 * Retrieves the map of player tokens for the current player's turn.
+	 *
+	 * @return A HashMap containing player names and their corresponding token counts.
+	 */
 	public HashMap<String, Integer> getPlayerTokens() {
 		HashMap<String, Integer> res;
 		if ((turn % 2) != 0) {
@@ -151,10 +257,28 @@ public abstract class Game {
 		return res;
 	}
 
+<<<<<<< HEAD
 	public Set<Class> getTokenSubtypes() {
 		return playerOne.getTokenSubtypes();
 	}
 	
+=======
+	/**
+	 * Retrieves the set of token subtypes used by player one in the game.
+	 *
+	 * @return A set containing the classes of token subtypes used by player one.
+	 */
+	public Set<Class> getTokenSubtypes() {
+		return playerOne.getTokenSubtypes();
+	}
+	
+	/**
+	 * Abstract method to be implemented by subclasses of Game.
+	 * Initiates the game setup based on the specified special percentage.
+	 *
+	 * @param especialPercentage The percentage of special elements in the game.
+	 */	
+>>>>>>> branch 'master' of https://github.com/Naetffy/Gomoku
 	public abstract void start(int especialPercentage);
 
 }
