@@ -1,14 +1,21 @@
 package presentation;
 
 import domain.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.AncestorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicButtonListener;
+import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.plaf.basic.BasicLookAndFeel;
 
 public class GomokuGUI extends JFrame {
 
@@ -27,27 +34,23 @@ public class GomokuGUI extends JFrame {
 	// Start
 	public JPanel start;
 	private JButton startButton;
-
-	private JComboBox<String> gameMode;
-	private JTextField limitTokens;
-	private JTextField limitTime;
-
-	private JComboBox<String> gamePlayers;
-	private JTextField gamePlayerOne;
-	private JTextField gamePlayerTwo;
-
-	private JTextField gameSizeField;
-	private JSlider gameSlider;
-	private JButton createGame;
-
+	
 	// Game
 
 	private GomokuState state;
+	private String move;
+	
+	// PlayerOne
 	private JPanel player1;
+	private JButton[] tokensPlayer1;
+	JPanel tokens1;
+	
+	//PlayerTwo
 	private JPanel player2;
+	private JButton[] tokensPlayer2;
+	JPanel tokens2;
 
 	private GomokuGUI() {
-
 		prepareElements();
 		prepareActions();
 	}
@@ -55,10 +58,6 @@ public class GomokuGUI extends JFrame {
 	public static void main(String[] args) {
 		GomokuGUI gui = new GomokuGUI();
 		gui.setVisible(true);
-	}
-
-	public Gomoku getGomoku() {
-		return gomoku;
 	}
 
 	private void prepareElements() {
@@ -70,6 +69,7 @@ public class GomokuGUI extends JFrame {
 		setJMenuBar(prepareElementsMenu());
 		prepareElementsStart();
 		getContentPane().add(start);
+		setResizable(false);
 	}
 
 	private JMenuBar prepareElementsMenu() {
@@ -100,95 +100,34 @@ public class GomokuGUI extends JFrame {
 		start.add(startButton, BorderLayout.CENTER);
 	}
 
-	private JPanel prepareElementsStartConfig() {
-		JPanel config = new JPanel();
-		config.setLayout(new GridLayout(4, 1));
-		config.add(prepareElementsStartConfigGameSize());
-		config.add(prepareElementsStartConfigGameMode());
-		config.add(prepareElementsStartConfigGamePlayers());
-		// config.add(prepareElementsStartConfigGameSlider());
-		config.add(prepareElementsStartCreateGame());
-		return config;
-	}
-
-	private JPanel prepareElementsStartConfigGameSize() {
-		JPanel configGameSize = new JPanel();
-		configGameSize
-				.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Size of the board")));
-		configGameSize.setLayout(new GridLayout(0, 3, WIDTH / 16, 0));
-		gameSizeField = new JTextField("15");
-		configGameSize.add(gameSizeField);
-		return configGameSize;
-	}
-
-	private JPanel prepareElementsStartConfigGameMode() {
-		JPanel configGameMode = new JPanel();
-		configGameMode.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Game mode config")));
-		configGameMode.setLayout(new GridLayout(0, 3, WIDTH / 16, 0));
-		gameMode = new JComboBox<>();
-		gameMode.addItem("Normal");
-		gameMode.addItem("QuickTime");
-		gameMode.addItem("Limited");
-		limitTokens = new JTextField("Limit tokens");
-		limitTokens.setEditable(false);
-		limitTime = new JTextField("Limit time (seconds)");
-		limitTime.setEditable(false);
-		configGameMode.add(gameMode);
-		configGameMode.add(limitTokens);
-		configGameMode.add(limitTime);
-		prepareActionsStartConfigGameMode();
-		return configGameMode;
-	}
-
-	private JPanel prepareElementsStartConfigGamePlayers() {
-		JPanel configGamePlayers = new JPanel();
-		configGamePlayers
-				.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Players config")));
-		configGamePlayers.setLayout(new GridLayout(0, 3, WIDTH / 16, 0));
-		gamePlayers = new JComboBox<>();
-		gamePlayers.addItem("Player vs Player");
-		gamePlayers.addItem("Player vs Machine");
-		gamePlayers.addItem("Machine vs Machine");
-		gamePlayerOne = new JTextField("Name player one");
-		gamePlayerTwo = new JTextField("Name player two");
-		configGamePlayers.add(gamePlayers);
-		configGamePlayers.add(gamePlayerOne);
-		configGamePlayers.add(gamePlayerTwo);
-		prepareActionsStartConfigGamePlayers();
-		return configGamePlayers;
-	}
-
-	private JPanel prepareElementsStartConfigGameSlider() {
-		JPanel configGameSlider = new JPanel();
-		configGameSlider.setBorder(
-				new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Especial percentage (%)")));
-		configGameSlider.setLayout(new FlowLayout(FlowLayout.LEFT));
-		gameSlider = new JSlider(0, 100, 20);
-		gameSlider.setMajorTickSpacing(20);
-		gameSlider.setMinorTickSpacing(5);
-		gameSlider.setPaintTicks(true);
-		gameSlider.setPaintLabels(true);
-		configGameSlider.add(gameSlider);
-		return configGameSlider;
-	}
-
-	private JPanel prepareElementsStartCreateGame() {
-		JPanel start = new JPanel();
-		start.setLayout(new FlowLayout(FlowLayout.CENTER));
-		createGame = new JButton("Create the game");
-		start.add(createGame);
-		return start;
-	}
-
-	private void prepareElementsGame() {
+	
+	public void prepareElementsGame() {
+		this.gomoku = Gomoku.getGomoku();
 		getContentPane().removeAll();
-
+		move = "NormalToken";
 		state = new GomokuState(this);
 		player1 = new JPanel();
 		player2 = new JPanel();
-		prepareElementsPlayer1();
-		prepareElementsPlayer2();
-
+		tokens1 = new JPanel();
+		Set<Class> tokens = gomoku.getTokenSubtypes();
+		tokens1.setLayout(new GridLayout(tokens.size(), 2));
+		tokens1.setBorder(
+				new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens player one:" )));
+		tokens2 = new JPanel();
+		tokens2.setLayout(new GridLayout(tokens.size(), 2));
+		tokens2.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens player two:" )));
+		
+		tokensPlayer1 = new JButton[tokens.size()];
+		tokensPlayer2 = new JButton[tokens.size()];
+		int i = 0;
+		for(Class token : tokens) {
+			tokensPlayer1[i] = new JButton(token.getSimpleName());
+			tokensPlayer2[i] = new JButton(token.getSimpleName());
+			tokensPlayer1[i].setEnabled(false);
+			i++;
+		}
+		prepareElementsTokensInfo();
+		prepareActionsTokensInfo();
 		getContentPane().setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
@@ -206,45 +145,38 @@ public class GomokuGUI extends JFrame {
 	}
 
 	private void prepareElementsPlayer1() {
-		player1 = new JPanel();
-		player1.setLayout(new BoxLayout(player1, BoxLayout.Y_AXIS));
+		tokens1.removeAll();
 		Player playerOne = gomoku.getPlayerOne();
 		HashMap<String, Integer> map = playerOne.getMap();
-		JPanel tokens = new JPanel();
-		tokens.setLayout(new GridLayout(3, 2));
-		tokens.setBorder(
-				new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens" + playerOne.getName())));
-		ImageIcon img1 = new ImageIcon("src/resources/images/Normal.png");
-		tokens.add(new JLabel(img1));
-		tokens.add(new JLabel("Normal token: " + map.get("Normal")));
-		ImageIcon img2 = new ImageIcon("src/resources/images/Heavy.png");
-		tokens.add(new JLabel(img2));
-		tokens.add(new JLabel("Heavy token: " + map.get("Heavy")));
-		ImageIcon img3 = new ImageIcon("src/resources/images/Temporary.png");
-		tokens.add(new JLabel(img3));
-		tokens.add(new JLabel("Temporary token: " + map.get("Temporary")));
-		player1.add(tokens);
+		for(int i = 0; i < map.size();i++) {
+			if (tokensPlayer1[i].isEnabled())tokensPlayer1[i].setEnabled(false);
+			else tokensPlayer1[i].setEnabled(true);
+			tokens1.add(tokensPlayer1[i]);
+			tokens1.add(new JLabel(": " + map.get(tokensPlayer1[i].getText())));
+		}
+		player1.add(tokens1);
+		player1.revalidate();
+		player1.repaint();
 	}
 
 	private void prepareElementsPlayer2() {
-		player2 = new JPanel();
-		player2.setLayout(new BoxLayout(player2, BoxLayout.Y_AXIS));
+		tokens2.removeAll();
 		Player playerTwo = gomoku.getPlayerTwo();
 		HashMap<String, Integer> map = playerTwo.getMap();
-		JPanel tokens = new JPanel();
-		tokens.setLayout(new GridLayout(3, 2));
-		tokens.setBorder(
-				new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens" + playerTwo.getName())));
-		ImageIcon img1 = new ImageIcon("src/resources/images/Normal.png");
-		tokens.add(new JLabel(img1));
-		tokens.add(new JLabel("Normal token: " + map.get("Normal")));
-		ImageIcon img2 = new ImageIcon("src/resources/images/Heavy.png");
-		tokens.add(new JLabel(img2));
-		tokens.add(new JLabel("Heavy token: " + map.get("Heavy")));
-		ImageIcon img3 = new ImageIcon("src/resources/images/Temporary.png");
-		tokens.add(new JLabel(img3));
-		tokens.add(new JLabel("Temporary token: " + map.get("Temporary")));
-		player2.add(tokens);
+		for(int i = 0; i < map.size();i++) {
+			if (tokensPlayer2[i].isEnabled())tokensPlayer2[i].setEnabled(false);
+			else tokensPlayer2[i].setEnabled(true);
+			tokens2.add(tokensPlayer2[i]);
+			tokens2.add(new JLabel(": " + map.get(tokensPlayer2[i].getText())));
+		}
+		player2.add(tokens2);
+		player2.revalidate();
+		player2.repaint();
+	}
+	
+	public void prepareElementsTokensInfo() {
+		prepareElementsPlayer1();
+		prepareElementsPlayer2();
 	}
 
 	private void prepareActions() {
@@ -258,129 +190,30 @@ public class GomokuGUI extends JFrame {
 	}
 
 	private void prepareActionsStart() {
-		JFrame parent = this;
+		GomokuGUI parent = this;
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JDialog gameConfig = new JDialog(parent, "Game configs");
-				gameConfig.setSize(new Dimension(WIDTH / 2, HIGH / 2));
-				int x = (screenSize.width - WIDTH / 2) / 2;
-				int y = (screenSize.height - HIGH / 2) / 2;
-				gameConfig.setLocation(x, y);
-				gameConfig.add(prepareElementsStartConfig());
-				gameConfig.setVisible(true);
-				prepareActionsCreateGame(gameConfig);
+				JDialog gameConfig = new GameConfig(screenSize,WIDTH,HIGH,parent);
+				
 			}
 		});
 	}
-
-	private void prepareActionsStartConfigGameMode() {
-		gameMode.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JComboBox<String> combo = (JComboBox<String>) e.getSource();
-				String selecction = (String) combo.getSelectedItem();
-				if (selecction.equals("Normal")) {
-					limitTokens.setEditable(false);
-					limitTime.setEditable(false);
-					limitTokens.setText("No limit");
-					limitTime.setText("No limit");
-				} else if (selecction.equals("QuickTime")) {
-					limitTokens.setEditable(false);
-					limitTime.setEditable(true);
-					limitTokens.setText("No limit");
-					limitTime.setText("600");
-				} else {
-					limitTokens.setEditable(true);
-					limitTime.setEditable(false);
-					limitTokens.setText("50");
-					limitTime.setText("No limit");
+	
+	private void prepareActionsTokensInfo(){
+		for(JButton j : tokensPlayer1 ) {
+			j.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					move = j.getText();
 				}
-			}
-		});
-	}
-
-	private void prepareActionsStartConfigGamePlayers() {
-		gamePlayers.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JComboBox<String> combo = (JComboBox<String>) e.getSource();
-				String selecction = (String) combo.getSelectedItem();
-				if (selecction.equals("Player vs Player")) {
-					gamePlayerOne.setEditable(true);
-					gamePlayerTwo.setEditable(true);
-					gamePlayerOne.setText("Name player one");
-					gamePlayerTwo.setText("Name player two");
-				} else if (selecction.equals("Player vs Machine")) {
-					gamePlayerOne.setEditable(true);
-					gamePlayerTwo.setEditable(false);
-					gamePlayerOne.setText("Name player one");
-					gamePlayerTwo.setText("Machine");
-				} else {
-					gamePlayerOne.setEditable(false);
-					gamePlayerTwo.setEditable(false);
-					gamePlayerOne.setText("MachineOne");
-					gamePlayerTwo.setText("MachineTwo");
-				}
-			}
-		});
-	}
-
-	private void prepareActionsCreateGame(JDialog parent) {
-		createGame.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					int size = Integer.parseInt(gameSizeField.getText());
-					String mode = (String) gameMode.getSelectedItem();
-					try {
-						System.out.println(mode);
-						gomoku = new Gomoku(mode, size, 0);
-						parent.dispose();
-						prepareActionSetPlayersTypeAndName();
-						prepareElementsGame();
-
-					} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-							| IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-						ex.printStackTrace();
-					}
-
-				} catch (NumberFormatException ex) {
-					Timer timer = new Timer(1000, new ActionListener() {
-						public void actionPerformed(ActionEvent evt) {
-							JOptionPane.getRootFrame().dispose();
-						}
-					});
-					timer.setRepeats(false);
-					timer.start();
-					JOptionPane.showMessageDialog(null, "Invalid game size");
-					timer.restart();
-				}
-			}
-		});
-	}
-
-	private void prepareActionSetPlayersTypeAndName() {
-		String players = (String) gamePlayers.getSelectedItem();
-		if (players.equals("Player vs Player")) {
-			try {
-				gomoku.setPlayers("Normal", "Normal");
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-			}
-		} else if (players.equals("Player vs Machine")) {
-			try {
-				gomoku.setPlayers("Normal", "Expert");
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				gomoku.setPlayers("Expert", "Expert");
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
-			}
+			});
 		}
-		gomoku.setPlayersInfo(gamePlayerOne.getText(),new Color(0,0,0), gamePlayerTwo.getText(),new Color(255,255,255));
+		for(JButton j : tokensPlayer2) {
+			j.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					move = j.getText();
+				}
+			});
+		}
 	}
 
 	private void closeOption() {
@@ -392,88 +225,10 @@ public class GomokuGUI extends JFrame {
 		}
 	}
 
+	public String getMove() {
+		return move;
+	}
+
 }
 
-class GomokuState extends JPanel {
-	private GomokuGUI gui;
-	private int size;
-	private int SIDE;
-	Gomoku gomoku;
-	private JButton[][] buttons;
 
-	public GomokuState(GomokuGUI gui) {
-		this.gui = gui;
-		gomoku = gui.getGomoku();
-		setBackground(new Color(190, 120, 50));
-		size = Math.min((3 * GomokuGUI.WIDTH) / 4, (3 * GomokuGUI.HIGH) / 4);
-		SIDE = size / gomoku.getSize();
-		buttons = new JButton[gomoku.getSize()][gomoku.getSize()];
-		setLayout(new GridLayout(gomoku.getSize(), gomoku.getSize(), 1, 1));
-		for (int i = 0; i < gomoku.getSize(); i++) {
-			for (int j = 0; j < gomoku.getSize(); j++) {
-				buttons[i][j] = new JButton();
-				buttons[i][j].setContentAreaFilled(false);
-				add(buttons[i][j]);
-			}
-		}
-		prepareActionsSquareClicked();
-		setPreferredSize(new Dimension(1 + SIDE * gomoku.getSize(), 1 + SIDE * gomoku.getSize()));
-	}
-
-	public void paintComponent(Graphics g) {
-		gomoku = gui.getGomoku();
-		super.paintComponent(g);
-
-		for (int f = 0; f <= gomoku.getSize(); f++) {
-			g.drawLine(f * SIDE, 0, f * SIDE, gomoku.getSize() * SIDE);
-		}
-		for (int c = 0; c <= gomoku.getSize(); c++) {
-			g.drawLine(0, c * SIDE, gomoku.getSize() * SIDE, c * SIDE);
-		}
-
-	}
-
-	private void prepareActionsSquareClicked() {
-		for (int i = 0; i < gomoku.getSize(); i++) {
-			for (int j = 0; j < gomoku.getSize(); j++) {
-				int x = i;
-				int y = j;
-				buttons[i][j].addActionListener(new ActionListener() {
-					private boolean circular = false;
-
-					public void actionPerformed(ActionEvent e) {
-						if (!circular) {
-							Dimension size = buttons[x][y].getSize();
-							if (size.width != size.height) {
-								size.width = size.height = Math.min(size.width, size.height);
-								buttons[x][y].setSize(size);
-							}
-							buttons[x][y].setContentAreaFilled(true);
-							gomoku.play("Normal",x, y);
-							buttons[x][y].setBackground(gomoku.getTokenColor(x, y));
-							circular = true;
-							String winner = gomoku.getWinner();
-							if (winner != null) {
-								JOptionPane.showMessageDialog(null, "The winner is: " + winner);
-								gui.getContentPane().removeAll();
-								gui.add(gui.start);
-								gui.revalidate();
-								gui.repaint();
-							}
-						} else {
-							Timer timer = new Timer(1000, new ActionListener() {
-								public void actionPerformed(ActionEvent evt) {
-									JOptionPane.getRootFrame().dispose();
-								}
-							});
-							timer.setRepeats(false);
-							timer.start();
-							JOptionPane.showMessageDialog(null, "The square is already visited");
-							timer.restart();
-						}
-					}
-				});
-			}
-		}
-	}
-}

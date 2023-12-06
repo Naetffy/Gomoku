@@ -56,23 +56,33 @@ public abstract class Player {
 	
 	public void play(String typeToken, int row, int column) {
 		AlertPlay alert = new AlertPlay();
-		String type = "domain." + typeToken + "Token";
+		String type = "domain." + typeToken;
 		Class<?> clazz;
 		try {
-			clazz = Class.forName(type);
-			Constructor<?> constructor = clazz.getConstructor(Color.class, int.class, int.class);
-			Object tokenInstance = constructor.newInstance(color, row, column);
-			Token actualToken = (Token) tokenInstance;
-			alert.attach(actualToken);
-			alert.notifyObservers();
 			int quantity = quantitys.get(typeToken);
-			quantitys.put(typeToken, quantity - 1);
-			game.setToken(actualToken, row, column);
+			if (quantity > 0) {
+				clazz = Class.forName(type);
+				Constructor<?> constructor = clazz.getConstructor(Color.class, int.class, int.class);
+				Object tokenInstance = constructor.newInstance(color, row, column);
+				Token actualToken = (Token) tokenInstance;
+				actualToken.setPlayer(this);
+				alert.attach(actualToken);
+				alert.notifyObservers();
+				quantitys.put(typeToken, quantity - 1);
+				game.setToken(actualToken, row, column);
+				game.setWinner(row, column);
+			}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
 		}
-
+	}
+	
+	public void deleteToken(int row, int column) {
+		game.setToken(null, row, column);
+	}
+	public Set<Class> getTokenSubtypes() {
+		return Token.getTokenSubtypes();
 	}
 	
 	public abstract int[] play();

@@ -37,6 +37,7 @@ public abstract class Game {
 	}
 
 	public void play(String token, int row, int column) {
+		token = token;
 		if (board.verify(row, column) && board.getTokenColor(row, column) == null) {
 			String player;
 			if ((turn % 2) == 0) {	
@@ -47,8 +48,6 @@ public abstract class Game {
 				player = playerTwo.getName();
 			}
 			turn += 1;
-			if (board.validate(row, column))
-				winner = player;
 		}
 	}
 
@@ -100,7 +99,7 @@ public abstract class Game {
 	    constructor = clazz.getConstructor();
 	    playerInstance = constructor.newInstance();
 	    playerTwo = (Player) playerInstance;
-
+	    
 	    playerOne.setGame(this);
 	    playerTwo.setGame(this);
 	    // Start the game with a specified special percentage
@@ -115,9 +114,19 @@ public abstract class Game {
 	public int getSize() {
 		return size;
 	}
-
+	
 	public String getWinner() {
 		return winner;
+	}
+	
+	public void setWinner(int row,int column) {
+		String player = null;
+		if ((turn % 2) == 0) 
+			player = playerOne.getName();
+		else 
+			player = playerTwo.getName();
+		if(board.validate(row, column))
+			winner = player;
 	}
 
 	public Player getPlayerOne() {
@@ -142,6 +151,10 @@ public abstract class Game {
 		return res;
 	}
 
+	public Set<Class> getTokenSubtypes() {
+		return playerOne.getTokenSubtypes();
+	}
+	
 	public abstract void start(int especialPercentage);
 
 }

@@ -6,8 +6,9 @@ import org.reflections.Reflections;
 
 public abstract class Token implements PlayToken{
 	private Color color;
-	int row;
-	int column;
+	protected int row;
+	protected int column;
+	protected Player player;
 	public static Set<Class> subTypes = null;
 	
 	public static Set<Class> getTokenSubtypes() {
@@ -27,6 +28,10 @@ public abstract class Token implements PlayToken{
 
 	public Color getColor() {
 		return color;
+	}
+	
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
     
 }

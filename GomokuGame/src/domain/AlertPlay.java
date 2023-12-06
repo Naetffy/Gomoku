@@ -15,8 +15,8 @@ public class AlertPlay {
 	}
 	
 	public void notifyObservers() {
-		for (PlayToken p : observers) {
-			p.act();
+		for (int i = 0; i < observers.size(); i++) {
+			observers.get(i).act();
 		}
 	}
 }

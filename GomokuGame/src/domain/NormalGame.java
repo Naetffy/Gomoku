@@ -14,25 +14,27 @@ public class NormalGame extends Game {
 	public void start(int especialPercentage) {
 		int numSpecials = (size * size) * especialPercentage / 100;
 		int num = size*size - numSpecials;
-		playerOne.setQuantityTypeOfToken("Normal", num);
-		playerTwo.setQuantityTypeOfToken("Normal", num);
+		playerOne.setQuantityTypeOfToken("NormalToken", num);
+		playerTwo.setQuantityTypeOfToken("NormalToken", num);
 		Random random = new Random();
 		String lastName = null;
+		int lastSum=0;
+		num = 0;
 		for (Class typeOfToken : Token.getTokenSubtypes()) {
 			String tokenName = typeOfToken.getSimpleName();
-			if (numSpecials != 0) {
+			if (!tokenName.equals("NormalToken") && numSpecials != 0) 
 				num = random.nextInt(numSpecials);
-				numSpecials -= num;
-			}
-			if(!tokenName.equals("Normal")) {
+			if(!tokenName.equals("NormalToken")) {
 				playerOne.setQuantityTypeOfToken(tokenName, num);
 				playerTwo.setQuantityTypeOfToken(tokenName, num);
+				numSpecials -= num;
 				lastName = tokenName;
+				lastSum = num;
 			}
 		}
 		if (numSpecials != 0) {
-			playerOne.setQuantityTypeOfToken(lastName, numSpecials);
-			playerTwo.setQuantityTypeOfToken(lastName, numSpecials);
+			playerOne.setQuantityTypeOfToken(lastName, numSpecials+lastSum);
+			playerTwo.setQuantityTypeOfToken(lastName, numSpecials+lastSum);
 		}
 		
 	}

@@ -4,10 +4,17 @@ import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Gomoku {
 
 	private Game game;
+
+	private static Gomoku gomokuSingleton = null;
+
+	public static Gomoku getGomoku() {
+		return gomokuSingleton;
+	}
 
 	public Gomoku(String gameType, int size, int especialPercentage)
 			throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
@@ -17,6 +24,7 @@ public class Gomoku {
 		Constructor<?> constructor = clazz.getConstructor(int.class, int.class);
 		Object gameInstance = constructor.newInstance(size, especialPercentage);
 		game = (Game) gameInstance;
+		gomokuSingleton = this;
 	}
 
 	public void play(String token, int row, int column) {
@@ -59,6 +67,14 @@ public class Gomoku {
 
 	public Player getPlayerTwo() {
 		return game.getPlayerTwo();
+	}
+
+	public int getTurn() {
+		return game.getTurn();
+	}
+
+	public Set<Class> getTokenSubtypes() {
+		return game.getTokenSubtypes();
 	}
 
 }

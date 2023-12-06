@@ -7,9 +7,9 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="C:/Users/mateo.forero-f/Gomoku/GomokuGame/lib/reflections-0.10.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/mateo.forero-f/Gomoku/GomokuGame/lib/javassist-3.29.2-GA.jar"/>
-	<classpathentry kind="lib" path="C:/Users/mateo.forero-f/Gomoku/GomokuGame/lib/slf4j-simple-2.0.9.jar"/>
-	<classpathentry kind="lib" path="C:/Users/mateo.forero-f/Gomoku/GomokuGame/lib/slf4j-api-2.0.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mateo/git/Gomoku/GomokuGame/lib/reflections-0.10.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mateo/git/Gomoku/GomokuGame/lib/javassist-3.29.2-GA.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mateo/git/Gomoku/GomokuGame/lib/slf4j-simple-2.0.9.jar"/>
+	<classpathentry kind="lib" path="C:/Users/mateo/git/Gomoku/GomokuGame/lib/slf4j-api-2.0.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
