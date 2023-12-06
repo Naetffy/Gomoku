@@ -13,6 +13,7 @@ public abstract class Player {
 	private String name;
 	protected Color color;
 	protected HashMap<String, Integer> quantitys;
+	protected LinkedList<Token> tokens;
 	protected Game game;
 
 	public static Set<Class> subTypes = null;
@@ -44,10 +45,10 @@ public abstract class Player {
 	public String getName() {
 		return name;
 	}
+	
 	public void setGame(Game game) {
 		this.game = game;
 	}
-	
 
 	public HashMap<String, Integer> getMap() {
 		return quantitys;
