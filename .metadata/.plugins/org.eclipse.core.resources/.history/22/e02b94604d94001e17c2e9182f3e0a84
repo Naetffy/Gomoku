@@ -1,0 +1,171 @@
+package domain;
+
+import java.awt.Color;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Set;
+
+import org.reflections.Reflections;
+
+public abstract class Game {
+
+	private Board board;
+	protected int size;
+	protected int especialPercentage;
+	protected Player playerOne;
+	protected Player playerTwo;
+	private String winner;
+	private int turn;
+	public static Set<Class> subTypes = null;
+	
+	/**
+     * Retrieves a set of all classes that extends the Game class within the "domain" package.
+     *
+     * @return A set of Class objects representing the game subtypes.
+     */
+	public static Set<Class> getGameSubtypes() {
+		if (subTypes == null) {
+			Reflections reflections = new Reflections("domain");
+	        Set subTypesGet = reflections.getSubTypesOf(Game.class);
+	        subTypes = (Set<Class>)subTypesGet;
+		}
+        return subTypes;
+    }
+
+	/**
+	 * Constructs a Game object with the specified size and percentage of special elements.
+	 *
+	 * @param size               The size of the game board, indicating the dimensions.
+	 * @param especialPercentage The percentage of special elements in the game.
+	 */
+	public Game(int size, int especialPercentage) {
+		this.size = size;
+		this.board = new Board(size, especialPercentage);
+		this.especialPercentage = especialPercentage;
+		turn = 0;
+		winner = null;
+	}
+
+	public void play(String token, int row, int column) {
+		token = token;
+		if (board.verify(row, column) && board.getTokenColor(row, column) == null) {
+			String player;
+			if ((turn % 2) == 0) {	
+				playerOne.play(token, row, column);
+				player = playerOne.getName();
+			} else {
+				playerTwo.play(token, row, column);
+				player = playerTwo.getName();
+			}
+			turn += 1;
+		}
+	}
+
+	public void setToken(Token token,int row, int column) {
+		board.setToken(token,row,column);
+	}
+	public Board getBoard() {
+		return board;
+	}
+
+	public int getEspecialPercentage() {
+		return especialPercentage;
+	}
+
+	public int getTurn() {
+		return turn;
+	}
+	
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	/**
+	 * Sets the players for a game based on the specified player types.
+	 *
+	 * @param typePlayer1 The type of the first player. Accepted values: "Normal," "AggressiveMachine," "ExpertMachine," or "ScaryMachine."
+	 * @param typePlayer2 The type of the second player. Accepted values: "Normal," "AggressiveMachine," "ExpertMachine," or "ScaryMachine."
+	 * @throws ClassNotFoundException If the specified player class is not found.
+	 * @throws InstantiationException If there is an issue instantiating the player class.
+	 * @throws IllegalAccessException If there is an illegal access exception while creating an instance.
+	 * @throws IllegalArgumentException If an illegal or inappropriate argument is passed.
+	 * @throws InvocationTargetException If an invocation target exception occurs during instantiation.
+	 * @throws NoSuchMethodException If a specified constructor method is not found.
+	 * @throws SecurityException If there is a security violation during the instantiation process.
+	 */
+	public void setPlayers(String typePlayer1, String typePlayer2)
+	        throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+	        IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	    // Instantiate and set the first player
+	    String type = "domain." + typePlayer1 + "Player";
+	    Class<?> clazz = Class.forName(type);
+	    Constructor<?> constructor = clazz.getConstructor();
+	    Object playerInstance = constructor.newInstance();
+	    playerOne = (Player) playerInstance;
+
+	    // Instantiate and set the second player
+	    type = "domain." + typePlayer2 + "Player";
+	    clazz = Class.forName(type);
+	    constructor = clazz.getConstructor();
+	    playerInstance = constructor.newInstance();
+	    playerTwo = (Player) playerInstance;
+	    
+	    playerOne.setGame(this);
+	    playerTwo.setGame(this);
+	    // Start the game with a specified special percentage
+	    start(especialPercentage);
+	}
+	
+	public void setPlayersInfo(String nameOne, Color color1, String nameTwo, Color color2) {
+		playerOne.setInfo(nameOne, color1);
+		playerTwo.setInfo(nameTwo, color2);
+	}
+
+	public int getSize() {
+		return size;
+	}
+	
+	public String getWinner() {
+		return winner;
+	}
+	
+	public void setWinner(int row,int column) {
+		String player = null;
+		if ((turn % 2) == 0) 
+			player = playerOne.getName();
+		else 
+			player = playerTwo.getName();
+		if(board.validate(row, column))
+			winner = player;
+	}
+
+	public Player getPlayerOne() {
+		return playerOne;
+	}
+
+	public Player getPlayerTwo() {
+		return playerTwo;
+	}
+
+	public Color getTokenColor(int row, int column) {
+		return board.getTokenColor(row, column);
+	}
+
+	public HashMap<String, Integer> getPlayerTokens() {
+		HashMap<String, Integer> res;
+		if ((turn % 2) != 0) {
+			res = playerOne.getMap();
+		} else {
+			res = playerTwo.getMap();
+		}
+		return res;
+	}
+
+	public Set<Class> getTokenSubtypes() {
+		return playerOne.getTokenSubtypes();
+	}
+	
+	public abstract void start(int especialPercentage);
+
+}
