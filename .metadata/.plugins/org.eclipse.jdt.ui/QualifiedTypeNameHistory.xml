@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="domain.GomokuException"/>
+    <fullyQualifiedTypeName name="java.lang.Integer"/>
+    <fullyQualifiedTypeName name="java.lang.reflect.Constructor"/>
+    <fullyQualifiedTypeName name="domain.Square"/>
+    <fullyQualifiedTypeName name="domain.NormalSquare"/>
+    <fullyQualifiedTypeName name="domain.MineSquare"/>
+    <fullyQualifiedTypeName name="domain.TeleportSquare"/>
+    <fullyQualifiedTypeName name="java.util.Random"/>
+</qualifiedTypeNameHistroy>

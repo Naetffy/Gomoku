@@ -24,15 +24,10 @@ public class NormalGame extends Game {
 		super(size, especialPercentage);
 	}
 
-	/**
-     * Initiates the setup of a normal Gomoku game based on the specified special percentage.
-     * Each player receives a set quantity of normal tokens with a certain percentage of special tokens.
-     *
-     * @param especialPercentage The percentage of special elements in the game.
-     */
 	public void start(int especialPercentage) {
-		int numSpecials = (size * size) * especialPercentage / 100;
-		int num = size*size - numSpecials;
+		numTokens = size*size;
+		int numSpecials = (numTokens) * especialPercentage / 100;
+		int num = numTokens - numSpecials;
 		playerOne.setQuantityTypeOfToken("NormalToken", num);
 		playerTwo.setQuantityTypeOfToken("NormalToken", num);
 		Random random = new Random();

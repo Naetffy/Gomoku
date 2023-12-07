@@ -40,7 +40,7 @@ class GomokuTest {
 			gomoku = new Gomoku(gameType, size, especialPercentage);
 			fail("The test should fail");
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 		}
 	}
 	
@@ -50,21 +50,21 @@ class GomokuTest {
 		try {
 			gomoku = new Gomoku(gameType, size, especialPercentage);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("The test should pass");
 		}
 		gameType = "QuickTime";
 		try {
 			gomoku = new Gomoku(gameType, size, especialPercentage);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("The test should pass");
 		}
 		gameType = "Limited";
 		try {
 			gomoku = new Gomoku(gameType, size, especialPercentage);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("The test should pass");
 		}
 	}
@@ -229,7 +229,7 @@ class GomokuTest {
 				numTemporary = gomoku.getPlayerTokens().get("TemporaryToken");
 			}
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("Error should not happend");
 		}
 		gomoku.play("TemporaryToken", 0, 0);//Put temporary token turn 0
@@ -259,7 +259,7 @@ class GomokuTest {
 				numHeavy = gomoku.getPlayerTokens().get("HeavyToken");
 			}
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("Error should not happend");
 		}
 		gomoku.play("HeavyToken", 2, 2);
@@ -275,6 +275,31 @@ class GomokuTest {
 				c.equals(gomoku.getTokenColor(5, 4)) || c.equals(gomoku.getTokenColor(5, 6)));
 		
 	}
+	@Test
+	void testAGameWithHeavyTokensInTheBorders() {
+		int numHeavy = 0;
+		try {
+			while (numHeavy==0) {
+				gomoku = new Gomoku("Normal",15,50);
+				gomoku.setPlayers("Normal", "Normal");
+				gomoku.setPlayersInfo("Mateo", new Color(0,0,0), "Murcia", new Color(255,255,255));
+				numHeavy = gomoku.getPlayerTokens().get("HeavyToken");
+			}
+		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
+			fail("Error should not happend");
+		}
+		gomoku.play("HeavyToken", 0, 0);
+		assertEquals(new Color(0, 0, 0),gomoku.getTokenColor(0, 0));
+		Color c = new Color(0, 0, 0);
+		assertTrue(c.equals(gomoku.getTokenColor(0, 1)) || c.equals(gomoku.getTokenColor(1, 0)));
+		
+		gomoku.play("HeavyToken", 14, 14);
+		assertEquals(new Color(255, 255, 255),gomoku.getTokenColor(14, 14));
+		c = new Color(255, 255, 255);
+		assertTrue(c.equals(gomoku.getTokenColor(14, 13)) || c.equals(gomoku.getTokenColor(13, 14)));
+		
+	}
 	
 	@Test
 	void testAGameHavingZeroEspecialPercentage() {
@@ -283,5 +308,6 @@ class GomokuTest {
 		assertEquals(0,numHeavy);
 		assertEquals(0,numTemporary);
 	}
+	
 
 }

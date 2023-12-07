@@ -21,7 +21,8 @@ public class Board {
 		int numEspecialSquares = ((size * size) * percentageEspecialSquares) / 100;
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				boardSquares[i][j] = Square.createSquareInstance(false);
+				visited[i][j]=false;
+				boardSquares[i][j] = Square.createSquareInstance(this,i,j,false);
 			}
 		}
 		Random random = new Random();
@@ -29,13 +30,24 @@ public class Board {
 			int i = random.nextInt(0, size);
 			int j = random.nextInt(0, size);
 			if (!visited[i][j]) {
-				boardSquares[i][j] = Square.createSquareInstance(true);
+				boardSquares[i][j] = Square.createSquareInstance(this,i,j,true);
 				visited[i][j] = true;
 				numEspecialSquares--;
 			}
 		}
 	}
 
+	/**
+	 * Plays the specified token at the given row and column on the board.
+	 *
+	 * @param token  The token to be placed on the board.
+	 * @param row    The row where the token will be placed.
+	 * @param column The column where the token will be placed.
+	 */
+	public void playToken(Token token, int row, int column) {
+		boardSquares[row][column].playToken(token);
+	}
+	
 	/**
 	 * Sets the specified token at the given row and column on the board.
 	 *
@@ -60,6 +72,10 @@ public class Board {
 		else
 			return null;
 	}
+	
+	public int getSize() {
+		return size;
+	}
 
 	/**
 	 * Validates whether the move at the specified row and column results in a winning condition.
@@ -71,9 +87,10 @@ public class Board {
 	 */
 	public boolean validate(int row, int column) {
 		boolean winner = false;
-		if (verify(row, column))
+		if (verify(row, column)) {
 			winner = diagonalMove(row, column) || diagonalIMove(row, column) || verticalMove(row, column)
 					|| horizontalMove(row, column);
+		}
 		return winner;
 	}
 
@@ -109,7 +126,8 @@ public class Board {
 				.getTokenColor() == boardSquares[row][column].getTokenColor())
 			dw++;
 		boolean winner = false;
-		if (up + dw == 4) {
+		if (boardSquares[row][column].getTokenColor() != null && up + dw == 4) {
+			System.out.println("Diagonal at: "+row+" "+column+"..."+up+" "+dw+"... color:"+boardSquares[row][column].getTokenColor());
 			winner = true;
 		}
 		return winner;
@@ -133,7 +151,8 @@ public class Board {
 				.getTokenColor() == boardSquares[row][column].getTokenColor())
 			dw++;
 		boolean winner = false;
-		if (up + dw == 4) {
+		if (boardSquares[row][column].getTokenColor() != null && up + dw == 4) {
+			System.out.println("Diagonal inverse at: "+row+" "+column+"..."+up+" "+dw+"... color:"+boardSquares[row][column].getTokenColor());
 			winner = true;
 		}
 		return winner;
@@ -156,7 +175,8 @@ public class Board {
 				&& boardSquares[row][column + rg + 1].getTokenColor() == boardSquares[row][column].getTokenColor())
 			rg++;
 		boolean winner = false;
-		if (lf + rg == 4) {
+		if (boardSquares[row][column].getTokenColor() != null && lf + rg == 4) {
+			System.out.println("Horizontal at: "+row+" "+column+"..."+lf+" "+rg+"... color:"+boardSquares[row][column].getTokenColor());
 			winner = true;
 		}
 		return winner;
@@ -180,10 +200,15 @@ public class Board {
 				&& boardSquares[row + dw + 1][column].getTokenColor() == boardSquares[row][column].getTokenColor())
 			dw++;
 		boolean winner = false;
-		if (up + dw == 4) {
+		if (boardSquares[row][column].getTokenColor() != null && up + dw == 4) {
+			System.out.println("Veticla at: "+row+" "+column+"..."+up+" "+dw+"... color:"+boardSquares[row][column].getTokenColor());
 			winner = true;
 		}
 		return winner;
+	}
+
+	public Square getSquare(int i, int j) {
+		return boardSquares[i][j];
 	}
 
 }

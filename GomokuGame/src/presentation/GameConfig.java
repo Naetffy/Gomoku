@@ -21,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import domain.Gomoku;
+import domain.GomokuException;
 
 public class GameConfig extends JDialog{
 	
@@ -191,18 +192,11 @@ public class GameConfig extends JDialog{
 				try {
 					int size = Integer.parseInt(gameSizeField.getText());
 					String mode = (String) gameMode.getSelectedItem();
-					try {
-						gomoku = new Gomoku(mode, size, 5);
-						parent.dispose();
-						prepareActionSetPlayersTypeAndName();
-						gui.prepareElementsGame();
-
-					} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
-							| IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-						ex.printStackTrace();
-					}
-
-				} catch (NumberFormatException ex) {
+					gomoku = new Gomoku(mode, size, 5);
+					parent.dispose();
+					prepareActionSetPlayersTypeAndName();
+					gui.prepareElementsGame();
+				} catch (NumberFormatException | GomokuException ex ) {
 					Timer timer = new Timer(1000, new ActionListener() {
 						public void actionPerformed(ActionEvent evt) {
 							JOptionPane.getRootFrame().dispose();
@@ -212,12 +206,21 @@ public class GameConfig extends JDialog{
 					timer.start();
 					JOptionPane.showMessageDialog(null, "Invalid game size");
 					timer.restart();
-				}
+				} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
+						| IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+					ex.printStackTrace();
+				} 
 			}
 		});
 	}
 
 	private void prepareActionSetPlayersTypeAndName() {
+		int defaultNum = Integer.parseInt(gameSizeField.getText())*Integer.parseInt(gameSizeField.getText());;
+		try {
+			gomoku.setNumTokens(Integer.parseInt(limitTokens.getText()));
+		} catch (NumberFormatException e) {
+			gomoku.setNumTokens((defaultNum*defaultNum)/2);
+		}
 		String players = (String) gamePlayers.getSelectedItem();
 		if (players.equals("Player vs Player")) {
 			try {
@@ -242,5 +245,6 @@ public class GameConfig extends JDialog{
 			}
 		}
 		gomoku.setPlayersInfo(gamePlayerOne.getText(),new Color(0,0,0), gamePlayerTwo.getText(),new Color(255,255,255));
+		
 	}
 }

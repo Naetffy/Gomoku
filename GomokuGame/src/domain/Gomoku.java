@@ -19,13 +19,7 @@ public class Gomoku {
 	private Game game;
 
 	private static Gomoku gomokuSingleton = null;
-
-<<<<<<< HEAD
-	public static Gomoku getGomoku() {
-		return gomokuSingleton;
-	}
-
-=======
+	
 	/**
 	 * Retrieves the singleton instance of the Gomoku class.
 	 *
@@ -48,11 +42,12 @@ public class Gomoku {
 	 * @throws IllegalAccessException    If the constructor is not accessible due to access modifiers.
 	 * @throws IllegalArgumentException  If the provided arguments are not valid for the constructor.
 	 * @throws InvocationTargetException If an exception occurs while invoking the constructor.
+	 * @throws GomokuException           If the given size is less than 10
 	 */
->>>>>>> branch 'master' of https://github.com/Naetffy/Gomoku
 	public Gomoku(String gameType, int size, int especialPercentage)
 			throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException, GomokuException {
+		if (size < 10) throw new GomokuException(GomokuException.INVALID_GAME_SIZE);
 		String type = "domain." + gameType + "Game";
 		Class<?> clazz = Class.forName(type);
 		Constructor<?> constructor = clazz.getConstructor(int.class, int.class);
@@ -101,6 +96,15 @@ public class Gomoku {
 	 */
 	public void setPlayersInfo(String player1, Color color1, String player2, Color color2) {
 		game.setPlayersInfo(player1, color1, player2, color2);
+	}
+	
+	/**
+	 * Sets the number of tokens that will have the players
+	 * 
+	 * @param numTokens The number of tokens for the game
+	 */
+	public void setNumTokens(int numTokens) {
+		game.setNumTokens(numTokens);
 	}
 	
 	/**
@@ -167,13 +171,6 @@ public class Gomoku {
 	public Player getPlayerTwo() {
 		return game.getPlayerTwo();
 	}
-
-<<<<<<< HEAD
-	public int getTurn() {
-		return game.getTurn();
-	}
-
-=======
 	/**
 	 * Retrieves the current turn number in the Gomoku game.
 	 *
@@ -189,9 +186,12 @@ public class Gomoku {
 	 *
 	 * @return A set containing the classes of token subtypes.
 	 */
->>>>>>> branch 'master' of https://github.com/Naetffy/Gomoku
 	public Set<Class> getTokenSubtypes() {
 		return game.getTokenSubtypes();
+	}
+
+	public Square getSquare(int i, int j) {
+		return game.getSquare(i,j);
 	}
 
 }

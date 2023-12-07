@@ -33,5 +33,16 @@ public abstract class Token implements PlayToken{
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
-    
+	
+	public void setPosition(int row, int column) {
+		this.row = row;
+		this.column =  column;
+	}
+
+	public int getRow() {
+		return row;
+	}
+	public int getColumn() {
+		return column;
+	}
 }

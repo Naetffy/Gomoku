@@ -16,6 +16,10 @@ import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicButtonListener;
 
 import domain.Gomoku;
+import domain.MineSquare;
+import domain.NormalSquare;
+import domain.Square;
+import domain.TeleportSquare;
 
 class GomokuState extends JPanel {
 	private GomokuGUI gui;
@@ -23,22 +27,17 @@ class GomokuState extends JPanel {
 	private int SIDE;
 	private Gomoku gomoku;
 	private JButton[][] buttons;
-	private boolean[][] visited;
 
 	public GomokuState(GomokuGUI gui) {
 		this.gui = gui;
 		gomoku = Gomoku.getGomoku();
-		setBackground(new Color(190, 120, 50));
 		size = Math.min((3 * GomokuGUI.WIDTH) / 4, (3 * GomokuGUI.HIGH) / 4);
 		SIDE = size / gomoku.getSize();
-		visited = new boolean[gomoku.getSize()][gomoku.getSize()];
 		buttons = new JButton[gomoku.getSize()][gomoku.getSize()];
 		setLayout(new GridLayout(gomoku.getSize(), gomoku.getSize(), 1, 1));
 		for (int i = 0; i < gomoku.getSize(); i++) {
 			for (int j = 0; j < gomoku.getSize(); j++) {
 				buttons[i][j] = new JButton();
-				visited[i][j] = false;
-				buttons[i][j].setContentAreaFilled(false);
 				add(buttons[i][j]);
 			}
 		}
@@ -48,7 +47,6 @@ class GomokuState extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
 		for (int f = 0; f <= gomoku.getSize(); f++) {
 			g.drawLine(f * SIDE, 0, f * SIDE, gomoku.getSize() * SIDE);
 		}
@@ -58,19 +56,24 @@ class GomokuState extends JPanel {
 		for (int i = 0; i < gomoku.getSize(); i++) {
 			for (int j = 0; j < gomoku.getSize(); j++) {
 				Color color = gomoku.getTokenColor(i, j);
+				Square sq = gomoku.getSquare(i,j);
 				if (color == null) {
-					color = new Color(190, 120, 50);
-					buttons[i][j].setContentAreaFilled(false);
-					visited[i][j] = false;
-				} else {
-					visited[i][j] = true;
-					buttons[i][j].setContentAreaFilled(true);
-				}
+					if (sq instanceof NormalSquare) {
+						color = new Color(190, 120, 50);
+					}
+					else if(sq instanceof MineSquare) {
+						color = new Color(255, 0, 0);
+					}
+					else if(sq instanceof TeleportSquare) {
+						color = new Color(128, 0, 128);
+					}
+					else{
+						color = new Color(255, 215, 0);
+					}
+				} 
 				buttons[i][j].setBackground(color);
 			}
 		}
-		revalidate();
-		repaint();
 	}
 
 	private void prepareActionsSquareClicked() {
@@ -87,17 +90,16 @@ class GomokuState extends JPanel {
 				});
 				buttons[i][j].addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if (!visited[x][y]) {
+						Color color = gomoku.getTokenColor(x, y);
+						if (color == null) {
 							gomoku.play(gui.getMove(), x, y);
-							if(gomoku.getTokenColor(x, y) != null) {
-								visited[x][y] = true;
-								String winner = gomoku.getWinner();
-								gui.prepareElementsTokensInfo();
-								if (winner != null) {
-									JOptionPane.showMessageDialog(null, "The winner is: " + winner);
-									gui.getContentPane().removeAll();
-									gui.add(gui.start);
-								}
+							repaint();
+							String winner = gomoku.getWinner();
+							gui.prepareElementsTokensInfo();
+							if (winner != null) {
+								JOptionPane.showMessageDialog(null, "The winner is: " + winner);
+								gui.getContentPane().removeAll();
+								gui.add(gui.start);
 								
 							}
 						} else {
@@ -111,6 +113,7 @@ class GomokuState extends JPanel {
 							JOptionPane.showMessageDialog(null, "The square is already visited");
 							timer.restart();
 						}
+						
 					}
 				});
 

@@ -69,8 +69,8 @@ public abstract class Player {
 				alert.attach(actualToken);
 				alert.notifyObservers();
 				quantitys.put(typeToken, quantity - 1);
-				game.setToken(actualToken, row, column);
-				game.setWinner(row, column);
+				game.playToken(actualToken, row, column);
+				game.setWinner(actualToken.getRow(), actualToken.getColumn());
 			}
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException | SecurityException e) {

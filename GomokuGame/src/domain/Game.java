@@ -18,6 +18,7 @@ public abstract class Game {
 
 	private Board board;
 	protected int size;
+	protected int numTokens;
 	protected int especialPercentage;
 	protected Player playerOne;
 	protected Player playerTwo;
@@ -63,20 +64,28 @@ public abstract class Game {
 	 * @param column The column where the player wants to place the token.
 	 */
 	public void play(String token, int row, int column) {
-		token = token;
+		
 		if (board.verify(row, column) && board.getTokenColor(row, column) == null) {
-			String player;
 			if ((turn % 2) == 0) {	
 				playerOne.play(token, row, column);
-				player = playerOne.getName();
 			} else {
 				playerTwo.play(token, row, column);
-				player = playerTwo.getName();
 			}
 			turn += 1;
 		}
 	}
 
+	/**
+	 * Plays the specified token at the given row and column on the game board.
+	 *
+	 * @param token  The token to be placed on the game board.
+	 * @param row    The row where the token will be placed.
+	 * @param column The column where the token will be placed.
+	 */
+	public void playToken(Token token,int row, int column) {
+		board.playToken(token,row,column);
+	}
+	
 	/**
 	 * Sets the specified token at the given row and column on the game board.
 	 *
@@ -85,7 +94,7 @@ public abstract class Game {
 	 * @param column The column where the token will be placed.
 	 */
 	public void setToken(Token token,int row, int column) {
-		board.setToken(token,row,column);
+		board.playToken(token,row,column);
 	}
 	
 	/**
@@ -181,28 +190,31 @@ public abstract class Game {
 	public int getSize() {
 		return size;
 	}
-	
-<<<<<<< HEAD
-=======
+
 	/**
 	 * Retrieves the name of the player who won the game.
 	 *
 	 * @return The name of the winner or null if there is no winner yet.
-	 */
->>>>>>> branch 'master' of https://github.com/Naetffy/Gomoku
+	 */ 
 	public String getWinner() {
 		return winner;
 	}
 	
-<<<<<<< HEAD
-=======
+	/**
+	 * Sets the number of tokens that will have the players
+	 * 
+	 * @param numTokens The number of tokens for the game
+	 */
+	public void setNumTokens(int numTokens) {
+		this.numTokens = numTokens;
+	}
+	
 	/**
 	 * Sets the winner of the game based on the last move's coordinates.
 	 *
 	 * @param row    The row of the last move.
 	 * @param column The column of the last move.
 	 */
->>>>>>> branch 'master' of https://github.com/Naetffy/Gomoku
 	public void setWinner(int row,int column) {
 		String player = null;
 		if ((turn % 2) == 0) 
@@ -257,12 +269,6 @@ public abstract class Game {
 		return res;
 	}
 
-<<<<<<< HEAD
-	public Set<Class> getTokenSubtypes() {
-		return playerOne.getTokenSubtypes();
-	}
-	
-=======
 	/**
 	 * Retrieves the set of token subtypes used by player one in the game.
 	 *
@@ -278,7 +284,10 @@ public abstract class Game {
 	 *
 	 * @param especialPercentage The percentage of special elements in the game.
 	 */	
->>>>>>> branch 'master' of https://github.com/Naetffy/Gomoku
 	public abstract void start(int especialPercentage);
+
+	public Square getSquare(int i, int j) {
+		return board.getSquare(i,j);
+	};
 
 }
