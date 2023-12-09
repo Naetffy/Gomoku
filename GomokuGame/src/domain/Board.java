@@ -7,6 +7,7 @@ public class Board {
 
 	private int size;
 	private Square[][] boardSquares;
+	private Game game;
 
 	/**
 	 * Constructs a Board object with the specified size and percentage of special squares.
@@ -14,17 +15,21 @@ public class Board {
 	 * @param size                     The size of the board, indicating the dimensions.
 	 * @param percentageEspecialSquares The percentage of special squares on the board.
 	 */
-	public Board(int size, int percentageEspecialSquares) {
+	public Board(int size) {
 		this.size = size;
 		boardSquares = new Square[size][size];
 		boolean[][] visited = new boolean[size][size];
-		int numEspecialSquares = ((size * size) * percentageEspecialSquares) / 100;
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				visited[i][j]=false;
 				boardSquares[i][j] = Square.createSquareInstance(this,i,j,false);
 			}
 		}
+	}
+	
+	public void setEspecialPercentageSquares(int especialPercentageSquares) {
+		int numEspecialSquares = ((size * size) * especialPercentageSquares) / 100;
+		boolean[][] visited = new boolean[size][size];
 		Random random = new Random();
 		while (numEspecialSquares > 0) {
 			int i = random.nextInt(0, size);
@@ -35,6 +40,10 @@ public class Board {
 				numEspecialSquares--;
 			}
 		}
+	}
+	
+	public void setGame(Game game) {
+		this.game = game;
 	}
 
 	/**
@@ -209,6 +218,22 @@ public class Board {
 
 	public Square getSquare(int i, int j) {
 		return boardSquares[i][j];
+	}
+
+	public void increaseTurn() {
+		game.increaseTurn();
+	}
+	
+	public void decreaseTurn() {
+		game.decreaseTurn();
+	}
+
+	public void increasePlayerQuantity(String name, int i) {
+		game.incresePlayerQuantity(name, i);
+	}
+
+	public int getTurn() {
+		return game.getTurn();
 	}
 
 }

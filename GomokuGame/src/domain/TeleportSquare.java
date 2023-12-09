@@ -8,7 +8,8 @@ public class TeleportSquare extends Square {
 		super(board,row,column);
 	}
 
-	public void playToken(Token token) {
+	public void act() {
+		AlertPlay.dettach(this);
 		Random random = new Random();
 		int i = random.nextInt(0,board.getSize());
 		int j = random.nextInt(0,board.getSize());
@@ -16,7 +17,9 @@ public class TeleportSquare extends Square {
 			i = random.nextInt(0,board.getSize());
 			j = random.nextInt(0,board.getSize());
 		}
-		token.setPosition(i, j);
-		board.playToken(token, i, j);
+		Token actualToken = token;
+		token = null;
+		board.playToken(actualToken, i, j);
+		
 	}
 }

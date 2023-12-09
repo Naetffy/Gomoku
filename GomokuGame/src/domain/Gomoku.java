@@ -3,6 +3,7 @@ package domain;
 import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -30,11 +31,10 @@ public class Gomoku {
 	}
 
 	/**
-	 * Constructs a Gomoku object based on the specified game type, size, and special percentage.
+	 * Constructs a Gomoku object based on the specified game type, and size.
 	 *
 	 * @param gameType           The type of the game, represented as a String.
 	 * @param size               The size of the game, indicating the dimensions.
-	 * @param especialPercentage The percentage of special elements in the game.
 	 * @throws ClassNotFoundException    If the specified game type class is not found.
 	 * @throws NoSuchMethodException     If a matching constructor is not found in the specified class.
 	 * @throws SecurityException         If a security violation occurs during reflection.
@@ -44,27 +44,17 @@ public class Gomoku {
 	 * @throws InvocationTargetException If an exception occurs while invoking the constructor.
 	 * @throws GomokuException           If the given size is less than 10
 	 */
-	public Gomoku(String gameType, int size, int especialPercentage)
+	public Gomoku(String gameType, int size)
 			throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException, GomokuException {
 		if (size < 10) throw new GomokuException(GomokuException.INVALID_GAME_SIZE);
 		String type = "domain." + gameType + "Game";
 		Class<?> clazz = Class.forName(type);
-		Constructor<?> constructor = clazz.getConstructor(int.class, int.class);
-		Object gameInstance = constructor.newInstance(size, especialPercentage);
+		Constructor<?> constructor = clazz.getConstructor(int.class);
+		Object gameInstance = constructor.newInstance(size);
 		game = (Game) gameInstance;
+		AlertPlay.dettachAll();	
 		gomokuSingleton = this;
-	}
-
-	/**
-	 * Plays a move in the Gomoku game by placing a token at the specified row and column.
-	 *
-	 * @param token  The player's token to be placed on the game board.
-	 * @param row    The row where the player wants to place the token.
-	 * @param column The column where the player wants to place the token.
-	 */
-	public void play(String token, int row, int column) {
-		game.play(token, row, column);
 	}
 
 	/**
@@ -99,12 +89,43 @@ public class Gomoku {
 	}
 	
 	/**
-	 * Sets the number of tokens that will have the players
+	 * Sets the especial info in the Gomoku game, including the especial percentage for tokens or squares.
+	 *
+	 * @param especialPercentageTokens the percentage of especial tokens for the players
+	 * @param especialPercentageSquares the percentage of especial squares for the board
+	 */
+	public void setEspecialInfo(int especialPercentageTokens, int especialPercentageSquares) {
+		game.setEspecialInfo(especialPercentageTokens, especialPercentageSquares);
+	}
+	
+	/**
+	 * Sets the limits of time an tokens that will have the players
 	 * 
 	 * @param numTokens The number of tokens for the game
 	 */
-	public void setNumTokens(int numTokens) {
+	public void setLimits(int numTokens,int timeLimit) {
 		game.setNumTokens(numTokens);
+		game.setTimeLimit(timeLimit);
+	}
+	
+	
+
+	public void play() {
+		ArrayList<Object> info = game.play();
+		if (info != null) {
+			game.play((String)info.get(0),(int)info.get(1), (int)info.get(2));
+			play();
+		}
+	}
+	/**
+	 * Plays a move in the Gomoku game by placing a token at the specified row and column.
+	 *
+	 * @param token  The player's token to be placed on the game board.
+	 * @param row    The row where the player wants to place the token.
+	 * @param column The column where the player wants to place the token.
+	 */
+	public void play(String token, int row, int column) {
+		game.play(token, row, column);
 	}
 	
 	/**

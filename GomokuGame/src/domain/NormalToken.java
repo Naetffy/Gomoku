@@ -10,8 +10,7 @@ public class NormalToken extends Token {
 
 	
 	public void act() {
-		AlertPlay alert = new AlertPlay();
-		alert.dettach(this);
+		AlertPlay.dettach(this);
 	}
 
 }

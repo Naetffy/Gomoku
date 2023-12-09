@@ -6,9 +6,10 @@ public class NormalSquare extends Square {
 		super(board,row,column);
 	}
 
-	public void playToken(Token token) {
+	public void act() {
+		
+		AlertPlay.dettach(this);
 		setToken(token);
+		board.increaseTurn();
 	}
-
-	
 }

@@ -5,12 +5,12 @@ import java.util.Random;
 
 public class LimitedGame extends Game {
 
-	public LimitedGame(int size, int especialPercentage) {
-		super(size, especialPercentage);
+	public LimitedGame(int size) {
+		super(size);
 	}
 
-	public void start(int especialPercentage) {
-		int numSpecials = (numTokens) * especialPercentage / 100;
+	public void start() {
+		int numSpecials = (numTokens) * especialPercentageTokens / 100;
 		int num = numTokens - numSpecials;
 		
 		playerOne.setQuantityTypeOfToken("NormalToken", num);

@@ -20,13 +20,13 @@ public class NormalGame extends Game {
      * @param size               The size of the game board, indicating the dimensions.
      * @param especialPercentage The percentage of special elements in the game.
      */
-	public NormalGame(int size, int especialPercentage) {
-		super(size, especialPercentage);
+	public NormalGame(int size) {
+		super(size);
 	}
 
-	public void start(int especialPercentage) {
+	public void start() {
 		numTokens = size*size;
-		int numSpecials = (numTokens) * especialPercentage / 100;
+		int numSpecials = (numTokens) * especialPercentageTokens / 100;
 		int num = numTokens - numSpecials;
 		playerOne.setQuantityTypeOfToken("NormalToken", num);
 		playerTwo.setQuantityTypeOfToken("NormalToken", num);

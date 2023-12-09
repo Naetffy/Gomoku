@@ -90,13 +90,18 @@ class GomokuState extends JPanel {
 				});
 				buttons[i][j].addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						int init = gomoku.getTurn();
+						System.out.println(init);
 						Color color = gomoku.getTokenColor(x, y);
 						if (color == null) {
 							gomoku.play(gui.getMove(), x, y);
-							repaint();
 							String winner = gomoku.getWinner();
-							gui.prepareElementsTokensInfo();
+							System.out.println(gomoku.getTurn());
+							if (init != gomoku.getTurn()) {
+								gui.prepareElementsTokensInfo();
+							}
 							if (winner != null) {
+								repaint();
 								JOptionPane.showMessageDialog(null, "The winner is: " + winner);
 								gui.getContentPane().removeAll();
 								gui.add(gui.start);
@@ -113,7 +118,7 @@ class GomokuState extends JPanel {
 							JOptionPane.showMessageDialog(null, "The square is already visited");
 							timer.restart();
 						}
-						
+						repaint();
 					}
 				});
 

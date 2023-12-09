@@ -3,6 +3,7 @@ package domain;
 import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -19,7 +20,8 @@ public abstract class Game {
 	private Board board;
 	protected int size;
 	protected int numTokens;
-	protected int especialPercentage;
+	protected int timeLimit;
+	protected int especialPercentageTokens;
 	protected Player playerOne;
 	protected Player playerTwo;
 	private String winner;
@@ -46,15 +48,94 @@ public abstract class Game {
 	 * @param size               The size of the game board, indicating the dimensions.
 	 * @param especialPercentage The percentage of special elements in the game.
 	 */
-	public Game(int size, int especialPercentage) {
+	public Game(int size) {
 		this.size = size;
-		this.board = new Board(size, especialPercentage);
-		this.especialPercentage = especialPercentage;
+		this.board = new Board(size);
+		this.board.setGame(this);
 		turn = 0;
 		winner = null;
 	}
 	
+	/**
+	 * Sets the players for the game based on the specified player types.
+	 *
+	 * @param typePlayer1 The type of player 1, represented as a String.
+	 * @param typePlayer2 The type of player 2, represented as a String.
+	 * @throws ClassNotFoundException    If the specified player type classes are not found.
+	 * @throws InstantiationException    If an instance of the player type cannot be created (abstract class or interface).
+	 * @throws IllegalAccessException    If the player type's constructor is not accessible due to access modifiers.
+	 * @throws IllegalArgumentException  If the provided arguments are not valid for the player type's constructor.
+	 * @throws InvocationTargetException If an exception occurs while invoking the player type's constructor.
+	 * @throws NoSuchMethodException     If a matching method is not found in the specified player type class.
+	 * @throws SecurityException         If a security violation occurs during reflection.
+	 */
+	public void setPlayers(String typePlayer1, String typePlayer2)
+	        throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+	        IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	    String type = "domain." + typePlayer1 + "Player";
+	    Class<?> clazz = Class.forName(type);
+	    Constructor<?> constructor = clazz.getConstructor();
+	    Object playerInstance = constructor.newInstance();
+	    playerOne = (Player) playerInstance;
+
+	    type = "domain." + typePlayer2 + "Player";
+	    clazz = Class.forName(type);
+	    constructor = clazz.getConstructor();
+	    playerInstance = constructor.newInstance();
+	    playerTwo = (Player) playerInstance;
+	    
+	    playerOne.setGame(this);
+	    playerTwo.setGame(this);
+	    
+	}
 	
+	/**
+	 * Sets the information for players in the game, including names and colors.
+	 *
+	 * @param nameOne  The name of player one.
+	 * @param color1   The color associated with player one.
+	 * @param nameTwo  The name of player two.
+	 * @param color2   The color associated with player two.
+	 */
+	public void setPlayersInfo(String nameOne, Color color1, String nameTwo, Color color2) {
+		playerOne.setInfo(nameOne, color1);
+		playerTwo.setInfo(nameTwo, color2);
+	}
+	
+	/**
+	 * Sets the number of tokens that will have the players
+	 * 
+	 * @param numTokens The number of tokens for the game
+	 */
+	public void setNumTokens(int numTokens) {
+		this.numTokens = numTokens;
+	}
+	
+	/**
+	 * Sets the limit time that will have the players
+	 * 
+	 * @param timeLimit the limit in seconds of the players -1 for inifinite time
+	 * 
+	 */
+	public void setTimeLimit(int timeLimit) {
+		this.timeLimit = timeLimit;
+	}
+	
+	public void setEspecialInfo(int especialPercentageTokens, int especialPercentageSquares) {
+		board.setEspecialPercentageSquares(especialPercentageSquares);
+		this.especialPercentageTokens = especialPercentageTokens;
+		start();
+	}
+	
+	public ArrayList<Object> play() {
+		ArrayList<Object> info;
+		if ((turn % 2) == 0) {	
+			info = playerOne.play();
+		} else {
+			info = playerTwo.play();
+		}
+		return info;
+	}
 	/**
 	 * Plays a move in the game by placing a token at the specified row and column for the current player.
 	 * The player's turn alternates between Player One and Player Two.
@@ -64,14 +145,12 @@ public abstract class Game {
 	 * @param column The column where the player wants to place the token.
 	 */
 	public void play(String token, int row, int column) {
-		
 		if (board.verify(row, column) && board.getTokenColor(row, column) == null) {
 			if ((turn % 2) == 0) {	
 				playerOne.play(token, row, column);
 			} else {
 				playerTwo.play(token, row, column);
 			}
-			turn += 1;
 		}
 	}
 
@@ -94,7 +173,7 @@ public abstract class Game {
 	 * @param column The column where the token will be placed.
 	 */
 	public void setToken(Token token,int row, int column) {
-		board.playToken(token,row,column);
+		board.setToken(token,row,column);
 	}
 	
 	/**
@@ -104,15 +183,6 @@ public abstract class Game {
 	 */
 	public Board getBoard() {
 		return board;
-	}
-
-	/**
-	 * Retrieves the percentage of special elements in the game.
-	 *
-	 * @return The percentage of special elements.
-	 */
-	public int getEspecialPercentage() {
-		return especialPercentage;
 	}
 
 	/**
@@ -133,54 +203,6 @@ public abstract class Game {
 		this.size = size;
 	}
 
-	/**
-	 * Sets the players for the game based on the specified player types.
-	 *
-	 * @param typePlayer1 The type of player 1, represented as a String.
-	 * @param typePlayer2 The type of player 2, represented as a String.
-	 * @throws ClassNotFoundException    If the specified player type classes are not found.
-	 * @throws InstantiationException    If an instance of the player type cannot be created (abstract class or interface).
-	 * @throws IllegalAccessException    If the player type's constructor is not accessible due to access modifiers.
-	 * @throws IllegalArgumentException  If the provided arguments are not valid for the player type's constructor.
-	 * @throws InvocationTargetException If an exception occurs while invoking the player type's constructor.
-	 * @throws NoSuchMethodException     If a matching method is not found in the specified player type class.
-	 * @throws SecurityException         If a security violation occurs during reflection.
-	 */
-	public void setPlayers(String typePlayer1, String typePlayer2)
-	        throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-	        IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-	    // Instantiate and set the first player
-	    String type = "domain." + typePlayer1 + "Player";
-	    Class<?> clazz = Class.forName(type);
-	    Constructor<?> constructor = clazz.getConstructor();
-	    Object playerInstance = constructor.newInstance();
-	    playerOne = (Player) playerInstance;
-
-	    // Instantiate and set the second player
-	    type = "domain." + typePlayer2 + "Player";
-	    clazz = Class.forName(type);
-	    constructor = clazz.getConstructor();
-	    playerInstance = constructor.newInstance();
-	    playerTwo = (Player) playerInstance;
-	    
-	    playerOne.setGame(this);
-	    playerTwo.setGame(this);
-	    // Start the game with a specified special percentage
-	    start(especialPercentage);
-	}
-	
-	/**
-	 * Sets the information for players in the game, including names and colors.
-	 *
-	 * @param nameOne  The name of player one.
-	 * @param color1   The color associated with player one.
-	 * @param nameTwo  The name of player two.
-	 * @param color2   The color associated with player two.
-	 */
-	public void setPlayersInfo(String nameOne, Color color1, String nameTwo, Color color2) {
-		playerOne.setInfo(nameOne, color1);
-		playerTwo.setInfo(nameTwo, color2);
-	}
 	
 	/**
 	 * Retrieves the size of the game board.
@@ -200,14 +222,6 @@ public abstract class Game {
 		return winner;
 	}
 	
-	/**
-	 * Sets the number of tokens that will have the players
-	 * 
-	 * @param numTokens The number of tokens for the game
-	 */
-	public void setNumTokens(int numTokens) {
-		this.numTokens = numTokens;
-	}
 	
 	/**
 	 * Sets the winner of the game based on the last move's coordinates.
@@ -217,7 +231,7 @@ public abstract class Game {
 	 */
 	public void setWinner(int row,int column) {
 		String player = null;
-		if ((turn % 2) == 0) 
+		if ((turn % 2) != 0) 
 			player = playerOne.getName();
 		else 
 			player = playerTwo.getName();
@@ -284,10 +298,25 @@ public abstract class Game {
 	 *
 	 * @param especialPercentage The percentage of special elements in the game.
 	 */	
-	public abstract void start(int especialPercentage);
+	protected abstract void start();
 
 	public Square getSquare(int i, int j) {
 		return board.getSquare(i,j);
-	};
+	}
 
+	public void increaseTurn() {
+		turn+=1;
+	}
+	public void decreaseTurn() {
+		turn-=1;
+	}
+
+	public void incresePlayerQuantity(String name, int i) {
+		if (turn%2 == 0) {
+			playerOne.increaseQuantityToken(name, i);
+		}
+		else {
+			playerTwo.increaseQuantityToken(name, i);
+		}
+	}
 }

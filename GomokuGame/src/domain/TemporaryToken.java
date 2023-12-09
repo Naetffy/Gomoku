@@ -16,9 +16,8 @@ public class TemporaryToken extends Token {
 		}
 		else {
 			if(creationTurn + 3 == Gomoku.getGomoku().getTurn()) {
+				AlertPlay.dettach(this);
 				player.deleteToken(row,column);
-				AlertPlay alert = new AlertPlay();
-				alert.dettach(this);
 			}
 		}
 	}

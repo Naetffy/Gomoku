@@ -6,16 +6,18 @@ public class MineSquare extends Square {
 		super(board,row,column);
 	}
 
-	public void playToken(Token token) {
+	public void act() {
+		AlertPlay.dettach(this);
+		setToken(token);
 		for(int i = row - 1; i <= row + 1;i++) {
 			for(int j = column - 1; j <= column + 1;j++) {
+				System.out.println(i+" "+j);
 				if (board.verify(i, j)) {
-					token.setPosition(-1, -1);
 					board.setToken(null, i, j);
 				}
 				
 			}
 		}
-		
+		board.increaseTurn();
 	}
 }

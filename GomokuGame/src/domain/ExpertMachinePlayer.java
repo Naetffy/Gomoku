@@ -1,12 +1,14 @@
 package domain;
 
+import java.util.ArrayList;
+
 public class ExpertMachinePlayer extends MachinePlayer {
 
-	public int[] play() {
+	public ArrayList<Object> play() {
 		return miniMax();
 	}
 
-	public int[] miniMax() {
+	public ArrayList<Object> miniMax() {
 		// Implementar miniMax para experta
 		return null;
 	}

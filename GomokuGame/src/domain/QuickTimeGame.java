@@ -4,12 +4,11 @@ import java.awt.Color;
 
 public class QuickTimeGame extends Game {
 
-	public QuickTimeGame(int size, int especialPercentage) {
-		super(size, especialPercentage);
-		start(especialPercentage);
+	public QuickTimeGame(int size) {
+		super(size);
 	}
 
-	public void start(int especialPercentage) {
+	public void start() {
 
 	}
 

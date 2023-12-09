@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
-public abstract class Square {
+public abstract class Square implements PlayToken{
 	protected Token token;
 	public static Set<Class> subTypes = null;
 	protected Board board;
@@ -61,10 +61,24 @@ public abstract class Square {
 	}
 
 	public void setToken(Token token) {
-		this.token = token;
+		if (token != null) {
+			this.token = token;
+			token.setPosition(row, column);
+			AlertPlay.attach(token);
+			AlertPlay.notifyObservers();
+		}
+		else {
+			this.token.setPosition(-1,-1);
+			this.token = token;
+		}
+		
 	}
 
-	public abstract void playToken(Token token);
+	public void playToken(Token token) {
+		this.token = token;
+		AlertPlay.attach(this);
+		AlertPlay.notifyObservers();
+	}
 	
 	public Color getTokenColor() {
 		Color color = null;

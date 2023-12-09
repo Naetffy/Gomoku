@@ -25,9 +25,11 @@ class GomokuTest {
 		especialPercentage = 0;
 		gameType = "Normal";
 		try {
-			gomoku = new Gomoku(gameType, size, especialPercentage);
+			gomoku = new Gomoku(gameType, size);
 			gomoku.setPlayers("Normal", "Normal");
 			gomoku.setPlayersInfo("Mateo", new Color(0,0,0), "Murcia", new Color(255,255,255));
+			gomoku.setLimits(15*15, -1);
+			gomoku.setEspecialInfo(especialPercentage, especialPercentage);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 		}
@@ -37,7 +39,7 @@ class GomokuTest {
 	void testGomokuConstructorShouldNotWork() {
 		gameType = "tipoInvalido";
 		try {
-			gomoku = new Gomoku(gameType, size, especialPercentage);
+			gomoku = new Gomoku(gameType, size);
 			fail("The test should fail");
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
@@ -48,21 +50,21 @@ class GomokuTest {
 	void testGomokuConstructorShouldWork() {
 		gameType = "Normal";
 		try {
-			gomoku = new Gomoku(gameType, size, especialPercentage);
+			gomoku = new Gomoku(gameType, size);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("The test should pass");
 		}
 		gameType = "QuickTime";
 		try {
-			gomoku = new Gomoku(gameType, size, especialPercentage);
+			gomoku = new Gomoku(gameType, size);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("The test should pass");
 		}
 		gameType = "Limited";
 		try {
-			gomoku = new Gomoku(gameType, size, especialPercentage);
+			gomoku = new Gomoku(gameType, size);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("The test should pass");
@@ -222,29 +224,44 @@ class GomokuTest {
 	void testAGameWithTemporaryTokens() {
 		int numTemporary = 0;
 		try {
-			while (numTemporary==0) {
-				gomoku = new Gomoku("Normal",15,50);
+			while (numTemporary < 4) {
+				gomoku = new Gomoku("Normal",15);
 				gomoku.setPlayers("Normal", "Normal");
 				gomoku.setPlayersInfo("Mateo", new Color(0,0,0), "Murcia", new Color(255,255,255));
+				gomoku.setEspecialInfo(50, 0);
 				numTemporary = gomoku.getPlayerTokens().get("TemporaryToken");
 			}
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
 			fail("Error should not happend");
 		}
+		
 		gomoku.play("TemporaryToken", 0, 0);//Put temporary token turn 0
+		
 		assertEquals(new Color(0, 0, 0),gomoku.getTokenColor(0, 0));
+		
 		assertEquals(numTemporary-1,gomoku.getPlayerTokens().get("TemporaryToken"));
+		
 		gomoku.play("TemporaryToken", 0, 1);//Put temporary token turn 1
+		
 		assertEquals(new Color(255, 255, 255),gomoku.getTokenColor(0, 1));
+		
 		assertEquals(numTemporary-1,gomoku.getPlayerTokens().get("TemporaryToken"));
+		
 		gomoku.play("NormalToken", 1, 0);//Turn 2 
+		
 		assertEquals(new Color(0, 0, 0),gomoku.getTokenColor(1, 0));
+		
 		gomoku.play("NormalToken", 1, 1);//Turn 3, should delete token in (0,0)
+		
 		assertEquals(new Color(255, 255, 255),gomoku.getTokenColor(1, 1));
+		
 		assertEquals(null,gomoku.getTokenColor(0, 0));
+		
 		gomoku.play("NormalToken", 2, 0);//Turn 4, should delete token in (0,1)
+		
 		assertEquals(null,gomoku.getTokenColor(0, 1));
+		
 		gomoku.play("NormalToken", 2, 1);
 	}
 	
@@ -253,10 +270,11 @@ class GomokuTest {
 		int numHeavy = 0;
 		try {
 			while (numHeavy==0) {
-				gomoku = new Gomoku("Normal",15,50);
+				gomoku = new Gomoku("Normal",15);
 				gomoku.setPlayers("Normal", "Normal");
 				gomoku.setPlayersInfo("Mateo", new Color(0,0,0), "Murcia", new Color(255,255,255));
-				numHeavy = gomoku.getPlayerTokens().get("HeavyToken");
+				gomoku.setEspecialInfo(50, 0);
+				numHeavy = gomoku.getPlayerTokens().get("TemporaryToken");
 			}
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {
@@ -279,11 +297,12 @@ class GomokuTest {
 	void testAGameWithHeavyTokensInTheBorders() {
 		int numHeavy = 0;
 		try {
-			while (numHeavy==0) {
-				gomoku = new Gomoku("Normal",15,50);
+			while (numHeavy < 2) {
+				gomoku = new Gomoku("Normal",15);
 				gomoku.setPlayers("Normal", "Normal");
 				gomoku.setPlayersInfo("Mateo", new Color(0,0,0), "Murcia", new Color(255,255,255));
-				numHeavy = gomoku.getPlayerTokens().get("HeavyToken");
+				gomoku.setEspecialInfo(50, 0);
+				numHeavy = gomoku.getPlayerTokens().get("TemporaryToken");
 			}
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException | InvocationTargetException | GomokuException e) {

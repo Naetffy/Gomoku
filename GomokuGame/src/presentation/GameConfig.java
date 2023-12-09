@@ -192,7 +192,7 @@ public class GameConfig extends JDialog{
 				try {
 					int size = Integer.parseInt(gameSizeField.getText());
 					String mode = (String) gameMode.getSelectedItem();
-					gomoku = new Gomoku(mode, size, 5);
+					gomoku = new Gomoku(mode, size);
 					parent.dispose();
 					prepareActionSetPlayersTypeAndName();
 					gui.prepareElementsGame();
@@ -217,9 +217,9 @@ public class GameConfig extends JDialog{
 	private void prepareActionSetPlayersTypeAndName() {
 		int defaultNum = Integer.parseInt(gameSizeField.getText())*Integer.parseInt(gameSizeField.getText());;
 		try {
-			gomoku.setNumTokens(Integer.parseInt(limitTokens.getText()));
+			gomoku.setLimits(Integer.parseInt(limitTokens.getText()),-1);
 		} catch (NumberFormatException e) {
-			gomoku.setNumTokens((defaultNum*defaultNum)/2);
+			gomoku.setLimits((defaultNum*defaultNum)/2,-1);
 		}
 		String players = (String) gamePlayers.getSelectedItem();
 		if (players.equals("Player vs Player")) {
@@ -245,6 +245,6 @@ public class GameConfig extends JDialog{
 			}
 		}
 		gomoku.setPlayersInfo(gamePlayerOne.getText(),new Color(0,0,0), gamePlayerTwo.getText(),new Color(255,255,255));
-		
+		gomoku.setEspecialInfo(5, 5);
 	}
 }

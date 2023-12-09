@@ -3,6 +3,7 @@ package domain;
 import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
@@ -13,7 +14,6 @@ public abstract class Player {
 	private String name;
 	protected Color color;
 	protected HashMap<String, Integer> quantitys;
-	protected LinkedList<Token> tokens;
 	protected Game game;
 
 	public static Set<Class> subTypes = null;
@@ -29,7 +29,6 @@ public abstract class Player {
 	
 	public Player() {
 		quantitys = new HashMap<>();
-		LinkedList<Token> tokens = new LinkedList();
 	}
 
 	public void setInfo(String namePlayer, Color color) {
@@ -39,6 +38,10 @@ public abstract class Player {
 
 	public void setQuantityTypeOfToken(String tokenName, int quantity) {
 		quantitys.put(tokenName, quantity);
+	}
+	
+	public void increaseQuantityToken(String tokenName, int increase) {
+		quantitys.put(tokenName, quantitys.get(tokenName)+increase);
 	}
 
 
@@ -55,7 +58,6 @@ public abstract class Player {
 	}
 	
 	public void play(String typeToken, int row, int column) {
-		AlertPlay alert = new AlertPlay();
 		String type = "domain." + typeToken;
 		Class<?> clazz;
 		try {
@@ -66,8 +68,6 @@ public abstract class Player {
 				Object tokenInstance = constructor.newInstance(color, row, column);
 				Token actualToken = (Token) tokenInstance;
 				actualToken.setPlayer(this);
-				alert.attach(actualToken);
-				alert.notifyObservers();
 				quantitys.put(typeToken, quantity - 1);
 				game.playToken(actualToken, row, column);
 				game.setWinner(actualToken.getRow(), actualToken.getColumn());
@@ -85,5 +85,12 @@ public abstract class Player {
 		return Token.getTokenSubtypes();
 	}
 	
-	public abstract int[] play();
+	public abstract ArrayList<Object> play();
+
+	public void increaseTurn() {
+		game.increaseTurn();
+	}
+	public void decreaseTurn() {
+		game.decreaseTurn();
+	}
 }
