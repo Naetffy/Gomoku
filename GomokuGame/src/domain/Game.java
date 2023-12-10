@@ -24,8 +24,8 @@ public abstract class Game {
 	protected int especialPercentageTokens;
 	protected Player playerOne;
 	protected Player playerTwo;
-	private String winner;
-	private int turn;
+	protected String winner;
+	protected int turn;
 	public static Set<Class> subTypes = null;
 	
 	/**
@@ -41,6 +41,7 @@ public abstract class Game {
 		}
         return subTypes;
     }
+
 
 	/**
 	 * Constructs a Game object with the specified size and percentage of special elements.

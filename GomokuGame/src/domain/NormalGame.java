@@ -50,7 +50,7 @@ public class NormalGame extends Game {
 			playerOne.setQuantityTypeOfToken(lastName, numSpecials+lastSum);
 			playerTwo.setQuantityTypeOfToken(lastName, numSpecials+lastSum);
 		}
-		
+	
 	}
 
 }

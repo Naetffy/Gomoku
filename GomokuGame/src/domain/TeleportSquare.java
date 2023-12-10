@@ -7,7 +7,7 @@ public class TeleportSquare extends Square {
 	public TeleportSquare(Board board,int row, int column) {
 		super(board,row,column);
 	}
-
+	
 	public void act() {
 		AlertPlay.dettach(this);
 		Random random = new Random();

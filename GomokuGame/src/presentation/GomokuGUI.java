@@ -173,7 +173,7 @@ public class GomokuGUI extends JFrame {
 		player2.revalidate();
 		player2.repaint();
 	}
-	
+
 	public void prepareElementsTokensInfo() {
 		prepareElementsPlayer1();
 		prepareElementsPlayer2();
@@ -207,6 +207,7 @@ public class GomokuGUI extends JFrame {
 				}
 			});
 		}
+		
 		for(JButton j : tokensPlayer2) {
 			j.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {

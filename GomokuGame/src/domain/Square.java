@@ -68,7 +68,9 @@ public abstract class Square implements PlayToken{
 			AlertPlay.notifyObservers();
 		}
 		else {
-			this.token.setPosition(-1,-1);
+			if (this.token != null){
+				this.token.setPosition(-1,-1);
+			}
 			this.token = token;
 		}
 		

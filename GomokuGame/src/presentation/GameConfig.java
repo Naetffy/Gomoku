@@ -213,13 +213,12 @@ public class GameConfig extends JDialog{
 			}
 		});
 	}
-
 	private void prepareActionSetPlayersTypeAndName() {
 		int defaultNum = Integer.parseInt(gameSizeField.getText())*Integer.parseInt(gameSizeField.getText());;
 		try {
-			gomoku.setLimits(Integer.parseInt(limitTokens.getText()),-1);
+			gomoku.setLimits(Integer.parseInt(limitTokens.getText()),20);
 		} catch (NumberFormatException e) {
-			gomoku.setLimits((defaultNum*defaultNum)/2,-1);
+			gomoku.setLimits((defaultNum*defaultNum)/2,20);
 		}
 		String players = (String) gamePlayers.getSelectedItem();
 		if (players.equals("Player vs Player")) {

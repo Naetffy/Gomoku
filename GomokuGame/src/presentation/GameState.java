@@ -91,12 +91,10 @@ class GomokuState extends JPanel {
 				buttons[i][j].addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						int init = gomoku.getTurn();
-						System.out.println(init);
 						Color color = gomoku.getTokenColor(x, y);
 						if (color == null) {
 							gomoku.play(gui.getMove(), x, y);
 							String winner = gomoku.getWinner();
-							System.out.println(gomoku.getTurn());
 							if (init != gomoku.getTurn()) {
 								gui.prepareElementsTokensInfo();
 							}
