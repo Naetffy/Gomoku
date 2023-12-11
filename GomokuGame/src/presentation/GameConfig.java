@@ -23,6 +23,11 @@ import javax.swing.border.TitledBorder;
 import domain.Gomoku;
 import domain.GomokuException;
 
+
+/**
+ * The GameConfig class represents a dialog for configuring the settings of a Gomoku game,
+ * including board size, game mode, players, and other options.
+ */
 public class GameConfig extends JDialog{
 	
 	private Dimension screenSize;
@@ -43,6 +48,15 @@ public class GameConfig extends JDialog{
 	private JSlider gameSlider;
 	private JButton createGame;
 	
+	
+	/**
+     * Constructs a GameConfig dialog with the specified screen size, width, height, and parent GUI.
+     *
+     * @param screenSize The screen size.
+     * @param WIDTH      The width of the dialog.
+     * @param HIGH       The height of the dialog.
+     * @param gui        The parent GomokuGUI.
+     */
 	public GameConfig(Dimension screenSize,int WIDTH, int HIGH,GomokuGUI gui) {
 		this.gui = gui;
 		this.screenSize = screenSize;
@@ -137,6 +151,11 @@ public class GameConfig extends JDialog{
 		return start;
 	}
 
+	
+	/**
+     * Sets up the action listeners for the game mode combo box to dynamically adjust the text fields
+     * based on the selected game mode.
+     */
 	private void prepareActionsStartConfigGameMode() {
 		gameMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -161,6 +180,12 @@ public class GameConfig extends JDialog{
 			}
 		});
 	}
+	
+	
+	/**
+     * Sets up the action listeners for the game players combo box to dynamically adjust the text fields
+     * based on the selected game players configuration.
+     */
 	private void prepareActionsStartConfigGamePlayers() {
 		gamePlayers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -186,6 +211,13 @@ public class GameConfig extends JDialog{
 		});
 	}
 
+	
+	/**
+     * Sets up the action listener for the "Create the game" button to create a Gomoku game with the specified
+     * configurations and start the game.
+     *
+     * @param parent The parent JDialog.
+     */
 	private void prepareActionsCreateGame(JDialog parent) {
 		createGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -213,6 +245,11 @@ public class GameConfig extends JDialog{
 			}
 		});
 	}
+	
+	
+	 /**
+     * Sets up the players' types, names, and other configurations based on the selected options.
+     */
 	private void prepareActionSetPlayersTypeAndName() {
 		int defaultNum = Integer.parseInt(gameSizeField.getText())*Integer.parseInt(gameSizeField.getText());;
 		try {

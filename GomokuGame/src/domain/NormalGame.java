@@ -24,6 +24,12 @@ public class NormalGame extends Game {
 		super(size);
 	}
 
+	
+	/**
+     * Initializes and starts a normal Gomoku game by distributing normal and special tokens to players.
+     * The number of normal and special tokens is determined based on the size of the game board
+     * and the specified percentage of special elements.
+     */
 	public void start() {
 		numTokens = size*size;
 		int numSpecials = (numTokens) * especialPercentageTokens / 100;

@@ -1,5 +1,11 @@
 package domain;
 
+
+/**
+ * The HeavyToken class represents a specialized type of Token with additional behavior.
+ * It extends the Token class and overrides the act() method to perform a specific action
+ * when triggered by an observer.
+ */
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,9 +13,24 @@ import java.util.Random;
 
 public class HeavyToken extends Token {
 
+	
+	/**
+     * Constructs a HeavyToken with the specified color, row, and column.
+     *
+     * @param color  The color of the HeavyToken.
+     * @param row    The row position of the HeavyToken on the game board.
+     * @param column The column position of the HeavyToken on the game board.
+     */
 	public HeavyToken(Color color, int row, int column) {
 		super(color, row, column);
 	}
+
+	
+	/**
+     * Overrides the act() method of the Token class. Detaches itself from the observer list,
+     * shuffles the order of possible moves, and attempts to expand by playing a NormalToken in
+     * one of the shuffled directions. If successful, updates the player's token count and decreases the turn count.
+     */
 
 	public void act() {
 		AlertPlay.dettach(this);
