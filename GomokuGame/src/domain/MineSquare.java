@@ -4,6 +4,9 @@ package domain;
  * The MineSquare class represents a specialized type of Square that, when activated,
  * removes tokens from the adjacent squares and increases the turn count on the game board.
  * It extends the Square class and overrides the act() method to perform this specific action.
+ * 
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
  */
 public class MineSquare extends Square {
 

@@ -30,9 +30,11 @@ import domain.GomokuException;
  */
 public class GameConfig extends JDialog{
 	
-	private Dimension screenSize;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2L;
 	private int WIDTH;
-	private int HIGH;
 	private GomokuGUI gui;
 	Gomoku gomoku;
 	
@@ -59,9 +61,7 @@ public class GameConfig extends JDialog{
      */
 	public GameConfig(Dimension screenSize,int WIDTH, int HIGH,GomokuGUI gui) {
 		this.gui = gui;
-		this.screenSize = screenSize;
 		this.WIDTH = WIDTH;
-		this.HIGH = HIGH;
 		this.setSize(new Dimension(WIDTH / 2, HIGH / 2));
 		int x = (screenSize.width - WIDTH / 2) / 2;
 		int y = (screenSize.height - HIGH / 2) / 2;
@@ -129,6 +129,7 @@ public class GameConfig extends JDialog{
 		return configGamePlayers;
 	}
 
+	@SuppressWarnings("unused")
 	private JPanel prepareElementsStartConfigGameSlider() {
 		JPanel configGameSlider = new JPanel();
 		configGameSlider.setBorder(
@@ -159,6 +160,7 @@ public class GameConfig extends JDialog{
 	private void prepareActionsStartConfigGameMode() {
 		gameMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unchecked")
 				JComboBox<String> combo = (JComboBox<String>) e.getSource();
 				String selecction = (String) combo.getSelectedItem();
 				if (selecction.equals("Normal")) {
@@ -189,6 +191,7 @@ public class GameConfig extends JDialog{
 	private void prepareActionsStartConfigGamePlayers() {
 		gamePlayers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unchecked")
 				JComboBox<String> combo = (JComboBox<String>) e.getSource();
 				String selecction = (String) combo.getSelectedItem();
 				if (selecction.equals("Player vs Player")) {

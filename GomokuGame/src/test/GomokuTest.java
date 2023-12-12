@@ -5,8 +5,6 @@ import domain.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Color;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 
 import org.junit.jupiter.api.BeforeEach;

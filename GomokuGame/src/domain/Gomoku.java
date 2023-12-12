@@ -12,8 +12,8 @@ import java.util.Set;
  * It manages the game state, player information, and provides access to various
  * aspects of the ongoing Gomoku game.
  * 
- * @author mateo forero fuentes and juan daniel murcia
- * @version 1.5.2
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
  */
 public class Gomoku {
 
@@ -109,7 +109,10 @@ public class Gomoku {
 	}
 	
 	
-
+	/**
+	 * Initiates a sequence of moves in the game. It repeatedly instructs the game to play
+	 * until no precalculated moves are available for the current player.
+	 */
 	public void play() {
 		ArrayList<Object> info = game.play();
 		if (info != null) {
@@ -117,6 +120,7 @@ public class Gomoku {
 			play();
 		}
 	}
+	
 	/**
 	 * Plays a move in the Gomoku game by placing a token at the specified row and column.
 	 *
@@ -207,7 +211,7 @@ public class Gomoku {
 	 *
 	 * @return A set containing the classes of token subtypes.
 	 */
-	public Set<Class> getTokenSubtypes() {
+	public Set<Class<? extends Token>> getTokenSubtypes() {
 		return game.getTokenSubtypes();
 	}
 

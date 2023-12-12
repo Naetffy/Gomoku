@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Set;
 
 import org.reflections.Reflections;
@@ -12,8 +13,9 @@ import org.reflections.Reflections;
 /**
  * The abstract Game class defines the common structure and behavior for Gomoku games.
  * Subclasses must extend this class and implement the abstract methods to create specific games.
- * @author mateo forero fuentes and juan daniel murcia
- * @version 1.5.2
+ * 
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
  */
 public abstract class Game {
 
@@ -26,18 +28,18 @@ public abstract class Game {
 	protected Player playerTwo;
 	protected String winner;
 	protected int turn;
-	public static Set<Class> subTypes = null;
+	public static Set<Class<? extends Game>> subTypes = null;
 	
 	/**
      * Retrieves a set of all classes that extends the Game class within the "domain" package.
      *
      * @return A set of Class objects representing the game subtypes.
      */
-	public static Set<Class> getGameSubtypes() {
+	public static Set<Class<? extends Game>> getGameSubtypes() {
 		if (subTypes == null) {
 			Reflections reflections = new Reflections("domain");
-	        Set subTypesGet = reflections.getSubTypesOf(Game.class);
-	        subTypes = (Set<Class>)subTypesGet;
+	        Set<Class<? extends Game>> subTypesGet = reflections.getSubTypesOf(Game.class);
+	        subTypes = subTypesGet;
 		}
         return subTypes;
     }
@@ -122,12 +124,28 @@ public abstract class Game {
 		this.timeLimit = timeLimit;
 	}
 	
+	/**
+	 * Sets the special information for the game, including the percentage of special tokens and squares.
+	 * It initializes the special squares on the board, sets the percentage of special tokens,
+	 * and starts the game.
+	 *
+	 * @param especialPercentageTokens  The percentage of special tokens to be used in the game.
+	 * @param especialPercentageSquares The percentage of special squares on the board.
+	 */
 	public void setEspecialInfo(int especialPercentageTokens, int especialPercentageSquares) {
 		board.setEspecialPercentageSquares(especialPercentageSquares);
 		this.especialPercentageTokens = especialPercentageTokens;
 		start();
 	}
 	
+	/**
+	 * Initiates a move in the game by instructing the current player (based on the turn count) to play.
+	 * If the current player is an AI player, the returned ArrayList contains a string representing the type of token,
+	 * and two integers indicating the row and column where the AI player chose to play. If the current player is a human player,
+	 * the method returns null, indicating that no precalculated move is available.
+	 *
+	 * @return An ArrayList containing AI player move information or null for human players.
+	 */
 	public ArrayList<Object> play() {
 		ArrayList<Object> info;
 		if ((turn % 2) == 0) {	
@@ -137,6 +155,7 @@ public abstract class Game {
 		}
 		return info;
 	}
+	
 	/**
 	 * Plays a move in the game by placing a token at the specified row and column for the current player.
 	 * The player's turn alternates between Player One and Player Two.
@@ -289,35 +308,87 @@ public abstract class Game {
 	 *
 	 * @return A set containing the classes of token subtypes used by player one.
 	 */
-	public Set<Class> getTokenSubtypes() {
+	public Set<Class<? extends Token>> getTokenSubtypes() {
 		return playerOne.getTokenSubtypes();
 	}
 	
 	/**
-	 * Abstract method to be implemented by subclasses of Game.
-	 * Initiates the game setup based on the specified special percentage.
+	 * Initializes the game by distributing normal and special tokens to players based on the provided percentages.
+	 * Special tokens are distributed randomly among available types.
+	 */
+	protected void start() {
+	    int numSpecials = (numTokens) * especialPercentageTokens / 100;
+	    int num = numTokens - numSpecials;
+	    playerOne.setQuantityTypeOfToken("NormalToken", num);
+	    playerTwo.setQuantityTypeOfToken("NormalToken", num);
+	    Random random = new Random();
+	    String lastName = null;
+	    int lastSum = 0;
+	    num = 0;
+
+	    // Distribute special tokens to players
+	    for (Class<? extends Token> typeOfToken : Token.getTokenSubtypes()) {
+	        String tokenName = typeOfToken.getSimpleName();
+	        if (!tokenName.equals("NormalToken") && numSpecials != 0)
+	            num = random.nextInt(numSpecials);
+
+	        // Set the quantity of each token type for both players
+	        if (!tokenName.equals("NormalToken")) {
+	            playerOne.setQuantityTypeOfToken(tokenName, num);
+	            playerTwo.setQuantityTypeOfToken(tokenName, num);
+	            numSpecials -= num;
+	            lastName = tokenName;
+	            lastSum = num;
+	        }
+	    }
+
+	    // If there are remaining special tokens, distribute them to the last token type
+	    if (numSpecials != 0) {
+	        playerOne.setQuantityTypeOfToken(lastName, numSpecials + lastSum);
+	        playerTwo.setQuantityTypeOfToken(lastName, numSpecials + lastSum);
+	    }
+	}
+
+
+	/**
+	 * Retrieves the Square object at the specified row and column coordinates on the board.
 	 *
-	 * @param especialPercentage The percentage of special elements in the game.
-	 */	
-	protected abstract void start();
-
+	 * @param i The row coordinate of the Square.
+	 * @param j The column coordinate of the Square.
+	 * @return The Square object at the specified coordinates.
+	 */
 	public Square getSquare(int i, int j) {
-		return board.getSquare(i,j);
+	    return board.getSquare(i, j);
 	}
 
+
+	/**
+	 * Increases the turn count in the game.
+	 */
 	public void increaseTurn() {
-		turn+=1;
-	}
-	public void decreaseTurn() {
-		turn-=1;
+	    turn += 1;
 	}
 
-	public void incresePlayerQuantity(String name, int i) {
-		if (turn%2 == 0) {
-			playerOne.increaseQuantityToken(name, i);
-		}
-		else {
-			playerTwo.increaseQuantityToken(name, i);
-		}
+	/**
+	 * Decreases the turn count in the game.
+	 */
+	public void decreaseTurn() {
+	    turn -= 1;
 	}
+
+
+	/**
+	 * Increases the quantity of a specific player's tokens based on the turn count.
+	 *
+	 * @param name The name of the player.
+	 * @param i    The quantity to increase.
+	 */
+	public void increasePlayerQuantity(String name, int i) {
+	    if (turn % 2 == 0) {
+	        playerOne.increaseQuantityToken(name, i);
+	    } else {
+	        playerTwo.increaseQuantityToken(name, i);
+	    }
+	}
+
 }

@@ -6,6 +6,9 @@ import java.util.Random;
  * The TeleportSquare class represents a square on the game board that, when activated,
  * teleport the token on it to a randomly selected empty square on the same board.
  * It extends the Square class.
+ * 
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
  */
 public class TeleportSquare extends Square {
 

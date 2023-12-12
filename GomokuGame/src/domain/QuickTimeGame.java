@@ -1,13 +1,11 @@
 package domain;
 
-import java.util.Random;
-
 /**
  * The QuickTimeGame class represents a specific implementation of the Game interface for a Gomoku game
  * with a quick time limit for each player's turn.
  *
- * @author [Author Names]
- * @version [Version Number]
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
  */
 public class QuickTimeGame extends Game {
 
@@ -31,62 +29,38 @@ public class QuickTimeGame extends Game {
      */
     public void start() {
         numTokens = size * size;
-        int numSpecials = (numTokens) * especialPercentageTokens / 100;
-        int num = numTokens - numSpecials;
-        playerOne.setQuantityTypeOfToken("NormalToken", num);
-        playerTwo.setQuantityTypeOfToken("NormalToken", num);
-        Random random = new Random();
-        String lastName = null;
-        int lastSum = 0;
-        num = 0;
-
-        // Distribute special tokens to players
-        for (Class typeOfToken : Token.getTokenSubtypes()) {
-            String tokenName = typeOfToken.getSimpleName();
-            if (!tokenName.equals("NormalToken") && numSpecials != 0)
-                num = random.nextInt(numSpecials);
-
-            // Set the quantity of each token type for both players
-            if (!tokenName.equals("NormalToken")) {
-                playerOne.setQuantityTypeOfToken(tokenName, num);
-                playerTwo.setQuantityTypeOfToken(tokenName, num);
-                numSpecials -= num;
-                lastName = tokenName;
-                lastSum = num;
-            }
-        }
-
-        // If there are remaining special tokens, distribute them to the last token type
-        if (numSpecials != 0) {
-            playerOne.setQuantityTypeOfToken(lastName, numSpecials + lastSum);
-            playerTwo.setQuantityTypeOfToken(lastName, numSpecials + lastSum);
-        }
-
+        super.start();
         // Set up quick time limit for each player's turn
         if (timeLimit >= 0) {
             timePlayerOne = timeLimit;
             timePlayerTwo = timeLimit;
             timerThread1 = createTimerThread(timePlayerOne);
             timerThread1.start();
-            timerThread2 = createTimerThread(timePlayerTwo);
         }
     }
 
+    /**
+     * Creates a timer thread with the specified time limit for a player's turn.
+     *
+     * @param seconds The time limit in seconds.
+     * @return A timer thread.
+     */
     private Thread createTimerThread(int seconds) {
         return new Thread(() -> {
-            int seconds1 = seconds;
+            int remainingSeconds = seconds;
             int creationTurn = turn;
-            while (seconds1 > 0 && turn == creationTurn) {
+
+            while (remainingSeconds > 0 && turn == creationTurn) {
                 try {
                     Thread.sleep(1000);
-                    System.out.println(seconds1);
-                    seconds1--;
+                    System.out.println(remainingSeconds);
+                    remainingSeconds--;
                 } catch (InterruptedException e) {
                     System.out.println(e);
                 }
             }
 
-            if (seconds <= 0 && getWinner() == null) {
+            if (remainingSeconds <= 0 && getWinner() == null) {
                 if (timePlayerOne <= 0) {
                     winner = playerTwo.getName();
                 } else if (timePlayerTwo <= 0) {
@@ -95,23 +69,35 @@ public class QuickTimeGame extends Game {
             }
 
             if (turn % 2 != 0) {
-                timePlayerOne = seconds1;
+                timePlayerOne = remainingSeconds;
             } else {
-                timePlayerTwo = seconds1;
+                timePlayerTwo = remainingSeconds;
             }
+
         });
     }
 
     /**
-     * Overrides the play method to incorporate the timing mechanism for each player's turn.
+     * Overrides the play method from the Game class to handle the player's turn and update the timer threads.
      *
-     * @param token  The type of token to be played.
-     * @param row    The row index where the token is played.
-     * @param column The column index where the token is played.
+     * @param token  The type of token to play.
+     * @param row    The row to place the token.
+     * @param column The column to place the token.
      */
     @Override
     public void play(String token, int row, int column) {
         super.play(token, row, column);
+        Thread currentTimerThread;
+        if (turn % 2 != 0) currentTimerThread = timerThread1;
+        else currentTimerThread = timerThread2;
+        if (currentTimerThread != null && currentTimerThread.isAlive()) {
+            try {
+                currentTimerThread.join();
+            } catch (InterruptedException e) {
+                System.out.println("Thread join interrupted: " + e);
+            }
+        }
+
         if (turn % 2 != 0) {
             timerThread2 = createTimerThread(timePlayerTwo);
             timerThread2.start();
@@ -120,11 +106,7 @@ public class QuickTimeGame extends Game {
             timerThread1.start();
         }
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            System.out.println(e);
-        }
-        System.out.println("Change of player");
+        System.out.println("time playerOne: " + timePlayerOne);
+        System.out.println("time playerTwo: " + timePlayerTwo);
     }
 }

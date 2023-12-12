@@ -1,10 +1,10 @@
 package domain;
 
-import java.awt.Color;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-
+/*
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
+ */
 public class NormalPlayer extends Player {
 
 

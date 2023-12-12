@@ -4,21 +4,18 @@ import domain.*;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Set;
 
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.AncestorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.plaf.basic.BasicButtonListener;
-import javax.swing.plaf.basic.BasicButtonUI;
-import javax.swing.plaf.basic.BasicLookAndFeel;
 
 public class GomokuGUI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	public static final int WIDTH = (3 * screenSize.width) / 4;
 	public static final int HIGH = (3 * screenSize.height) / 4;
@@ -109,7 +106,7 @@ public class GomokuGUI extends JFrame {
 		player1 = new JPanel();
 		player2 = new JPanel();
 		tokens1 = new JPanel();
-		Set<Class> tokens = gomoku.getTokenSubtypes();
+		Set<Class<? extends Token>> tokens = gomoku.getTokenSubtypes();
 		tokens1.setLayout(new GridLayout(tokens.size(), 2));
 		tokens1.setBorder(
 				new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens player one:" )));
@@ -120,7 +117,7 @@ public class GomokuGUI extends JFrame {
 		tokensPlayer1 = new JButton[tokens.size()];
 		tokensPlayer2 = new JButton[tokens.size()];
 		int i = 0;
-		for(Class token : tokens) {
+		for(Class<? extends Token> token : tokens) {
 			tokensPlayer1[i] = new JButton(token.getSimpleName());
 			tokensPlayer2[i] = new JButton(token.getSimpleName());
 			tokensPlayer1[i].setEnabled(false);
@@ -193,6 +190,7 @@ public class GomokuGUI extends JFrame {
 		GomokuGUI parent = this;
 		startButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				@SuppressWarnings("unused")
 				JDialog gameConfig = new GameConfig(screenSize,WIDTH,HIGH,parent);
 				
 			}

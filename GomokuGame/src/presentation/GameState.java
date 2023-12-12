@@ -22,6 +22,10 @@ import domain.Square;
 import domain.TeleportSquare;
 
 class GomokuState extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3L;
 	private GomokuGUI gui;
 	private int size;
 	private int SIDE;

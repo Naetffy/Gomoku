@@ -6,6 +6,9 @@ import java.util.Set;
 /**
  * The GoldenSquare class represents a square on the game board that, when activated,
  * has a special effect on the game. It implements the PlayToken interface.
+ * 
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
  */
 public class GoldenSquare extends Square implements PlayToken {
 
@@ -32,11 +35,11 @@ public class GoldenSquare extends Square implements PlayToken {
         if (creationTurn == null) {
             creationTurn = board.getTurn();
             setToken(token);
-            Set<Class> tokens = Token.getTokenSubtypes();
+            Set<Class<? extends Token>> tokens = Token.getTokenSubtypes();
             Random r = new Random();
             int rn = r.nextInt(tokens.size());
             int i = 0;
-            for (Class token : tokens) {
+            for (Class<? extends Token> token : tokens) {
                 String name = token.getSimpleName();
                 if (i == rn) {
                     if (!name.equals("NormalToken")) {

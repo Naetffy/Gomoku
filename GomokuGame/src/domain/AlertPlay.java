@@ -5,6 +5,9 @@ import java.util.ArrayList;
 /**
  * The AlertPlay class represents a mechanism for managing and notifying observers (PlayToken instances)
  * when a specific alert condition is met.
+ * 
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
  */
 public class AlertPlay {
 

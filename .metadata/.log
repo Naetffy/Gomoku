@@ -3438,3 +3438,120 @@ java.lang.IllegalArgumentException
 	at org.eclipse.jdt.internal.ui.viewsupport.SelectionListenerWithASTManager$PartListenerGroup.calculateASTandInform(SelectionListenerWithASTManager.java:166)
 	at org.eclipse.jdt.internal.ui.viewsupport.SelectionListenerWithASTManager$PartListenerGroup$1.run(SelectionListenerWithASTManager.java:151)
 	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+!SESSION 2023-12-09 19:20:27.930 -----------------------------------------------
+eclipse.buildId=4.28.0.20230608-1200
+java.version=20.0.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=es_CO
+Framework arguments:  -product org.eclipse.epp.package.java.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
+
+!ENTRY org.eclipse.jface 2 0 2023-12-09 19:21:39.171
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2023-12-09 19:21:39.171
+!MESSAGE A conflict occurred for CTRL+SHIFT+T:
+Binding(CTRL+SHIFT+T,
+	ParameterizedCommand(Command(org.eclipse.jdt.ui.navigate.open.type,Open Type,
+		Open a type in a Java editor,
+		Category(org.eclipse.ui.category.navigate,Navigate,null,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.jdt.ui.navigate.open.type"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(CTRL+SHIFT+T,
+	ParameterizedCommand(Command(org.eclipse.lsp4e.symbolinworkspace,Go to Symbol in Workspace,
+		,
+		Category(org.eclipse.lsp4e.category,Language Servers,null,true),
+		WorkbenchHandlerServiceHandler("org.eclipse.lsp4e.symbolinworkspace"),
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+
+!ENTRY org.eclipse.egit.ui 2 0 2023-12-09 19:21:53.564
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\mateo'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.egit.core 4 0 2023-12-11 13:48:37.073
+!MESSAGE Pulling 1 repository
+!SUBENTRY 1 org.eclipse.egit.core 4 0 2023-12-11 13:48:37.073
+!MESSAGE Checkout conflict with files: 
+GomokuGame/src/domain/Game.java
+GomokuGame/src/domain/HeavyToken.java
+GomokuGame/src/domain/QuickTimeGame.java
+GomokuGame/src/domain/Square.java
+GomokuGame/src/presentation/GameConfig.java
+GomokuGame/src/presentation/GameState.java
+!STACK 0
+org.eclipse.jgit.api.errors.CheckoutConflictException: Checkout conflict with files: 
+GomokuGame/src/domain/Game.java
+GomokuGame/src/domain/HeavyToken.java
+GomokuGame/src/domain/QuickTimeGame.java
+GomokuGame/src/domain/Square.java
+GomokuGame/src/presentation/GameConfig.java
+GomokuGame/src/presentation/GameState.java
+	at org.eclipse.jgit.api.MergeCommand.call(MergeCommand.java:423)
+	at org.eclipse.jgit.api.PullCommand.call(PullCommand.java:374)
+	at org.eclipse.egit.core.op.PullOperation$PullJob.run(PullOperation.java:256)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: org.eclipse.jgit.errors.CheckoutConflictException: Checkout conflict with files: 
+GomokuGame/src/domain/Game.java
+GomokuGame/src/domain/HeavyToken.java
+GomokuGame/src/domain/QuickTimeGame.java
+GomokuGame/src/domain/Square.java
+GomokuGame/src/presentation/GameConfig.java
+GomokuGame/src/presentation/GameState.java
+	at org.eclipse.jgit.dircache.DirCacheCheckout.doCheckout(DirCacheCheckout.java:508)
+	at org.eclipse.jgit.dircache.DirCacheCheckout.checkout(DirCacheCheckout.java:471)
+	at org.eclipse.jgit.api.MergeCommand.call(MergeCommand.java:289)
+	... 3 more
+
+!ENTRY org.eclipse.egit.core 4 0 2023-12-11 13:49:07.091
+!MESSAGE Pulling 1 repository
+!SUBENTRY 1 org.eclipse.egit.core 4 0 2023-12-11 13:49:07.091
+!MESSAGE Checkout conflict with files: 
+GomokuGame/src/domain/Game.java
+GomokuGame/src/domain/HeavyToken.java
+GomokuGame/src/domain/QuickTimeGame.java
+GomokuGame/src/domain/Square.java
+GomokuGame/src/presentation/GameConfig.java
+GomokuGame/src/presentation/GameState.java
+!STACK 0
+org.eclipse.jgit.api.errors.CheckoutConflictException: Checkout conflict with files: 
+GomokuGame/src/domain/Game.java
+GomokuGame/src/domain/HeavyToken.java
+GomokuGame/src/domain/QuickTimeGame.java
+GomokuGame/src/domain/Square.java
+GomokuGame/src/presentation/GameConfig.java
+GomokuGame/src/presentation/GameState.java
+	at org.eclipse.jgit.api.MergeCommand.call(MergeCommand.java:423)
+	at org.eclipse.jgit.api.PullCommand.call(PullCommand.java:374)
+	at org.eclipse.egit.core.op.PullOperation$PullJob.run(PullOperation.java:256)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:63)
+Caused by: org.eclipse.jgit.errors.CheckoutConflictException: Checkout conflict with files: 
+GomokuGame/src/domain/Game.java
+GomokuGame/src/domain/HeavyToken.java
+GomokuGame/src/domain/QuickTimeGame.java
+GomokuGame/src/domain/Square.java
+GomokuGame/src/presentation/GameConfig.java
+GomokuGame/src/presentation/GameState.java
+	at org.eclipse.jgit.dircache.DirCacheCheckout.doCheckout(DirCacheCheckout.java:508)
+	at org.eclipse.jgit.dircache.DirCacheCheckout.checkout(DirCacheCheckout.java:471)
+	at org.eclipse.jgit.api.MergeCommand.call(MergeCommand.java:289)
+	... 3 more
+
+!ENTRY org.eclipse.jdt.ui 4 10001 2023-12-11 21:31:39.472
+!MESSAGE Internal Error
+!STACK 0
+org.eclipse.jface.text.BadLocationException
+	at org.eclipse.jface.text.AbstractDocument.getChar(AbstractDocument.java:783)
+	at org.eclipse.core.internal.filebuffers.SynchronizableDocument.getChar(SynchronizableDocument.java:141)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaSourceHover.getBracketHoverInfo(JavaSourceHover.java:190)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaSourceHover.getHoverInfo(JavaSourceHover.java:147)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaSourceHover.getHoverInfo2(JavaSourceHover.java:127)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:163)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:130)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:89)
+	at org.eclipse.jface.text.TextViewerHoverManager$1.run(TextViewerHoverManager.java:155)

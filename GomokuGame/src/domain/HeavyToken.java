@@ -1,16 +1,18 @@
 package domain;
 
 
+
+import java.awt.Color;
+
+
 /**
  * The HeavyToken class represents a specialized type of Token with additional behavior.
  * It extends the Token class and overrides the act() method to perform a specific action
  * when triggered by an observer.
+ * 
+ * @author Juan Daniel Murcia - Mateo Forero Fuentes
+ * @version 1.8.5
  */
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-
 public class HeavyToken extends Token {
 
 	
@@ -23,6 +25,8 @@ public class HeavyToken extends Token {
      */
 	public HeavyToken(Color color, int row, int column) {
 		super(color, row, column);
+		this.value=2;
+		
 	}
 
 	
@@ -34,6 +38,7 @@ public class HeavyToken extends Token {
 
 	public void act() {
 		AlertPlay.dettach(this);
+		/*
 		ArrayList<Integer> order = new ArrayList<>();
 		boolean expanded = false;
 		int[][] moves = {{0,1},{1,0},{-1,0},{0,-1}};
@@ -56,7 +61,7 @@ public class HeavyToken extends Token {
 			player.setQuantityTypeOfToken("NormalToken", 1+player.getMap().get("NormalToken"));
 			player.decreaseTurn();
 		}
-
+		 */
 	}
 
 }
