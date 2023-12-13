@@ -75,15 +75,15 @@ public abstract class Player {
     public void increaseQuantityToken(String tokenName, int increase) {
         quantities.put(tokenName, quantities.get(tokenName) + increase);
     }
-
-    /**
-     * Retrieves the name of the player.
-     *
-     * @return The name of the player.
-     */
-    public String getName() {
-        return name;
-    }
+	
+	    /**
+	     * Retrieves the name of the player.
+	     *
+	     * @return The name of the player.
+	     */
+	    public String getName() {
+	        return name;
+	    }
 
     /**
      * Sets the associated game for the player.

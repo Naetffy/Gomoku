@@ -72,14 +72,6 @@ public class Board {
 		}
 	}
 
-	/**
-	 * Sets the associated Game instance for this Gomoku object.
-	 *
-	 * @param game The Game instance to be associated with this Gomoku object.
-	 */
-	public void setGame(Game game) {
-		this.game = game;
-	}
 
 	/**
 	 * Plays the specified token at the given row and column on the board.
@@ -348,6 +340,15 @@ public class Board {
 	 */
 	public int getTurn() {
 		return game.getTurn();
+	}
+	
+	/**
+	 * Sets the associated Game instance for this Gomoku object.
+	 *
+	 * @param game The Game instance to be associated with this Gomoku object.
+	 */
+	public void setGame(Game game) {
+		this.game = game;
 	}
 
 }

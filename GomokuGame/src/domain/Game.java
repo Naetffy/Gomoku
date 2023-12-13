@@ -213,15 +213,6 @@ public abstract class Game {
 	public int getTurn() {
 		return turn;
 	}
-	
-	/**
-	 * Sets the size of the game board to the specified value.
-	 *
-	 * @param size The new size of the game board.
-	 */
-	public void setSize(int size) {
-		this.size = size;
-	}
 
 	
 	/**
