@@ -171,4 +171,8 @@ public abstract class Player {
 	public void decreaseTurn() {
 		game.decreaseTurn();
 	}
+	
+	public void setColor(Color color) {
+	    this.color = color;
+	}
 }

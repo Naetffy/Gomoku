@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.JButton;
+import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -51,6 +52,12 @@ public class GameConfig extends JDialog{
 	private JButton createGame;
 	
 	
+	private JButton selectColorPlayerOne;
+	private JButton selectColorPlayerTwo;
+	private Color playerOneColor;
+	private Color playerTwoColor;
+	
+	
 	/**
      * Constructs a GameConfig dialog with the specified screen size, width, height, and parent GUI.
      *
@@ -65,6 +72,8 @@ public class GameConfig extends JDialog{
 		this.setSize(new Dimension(WIDTH / 2, HIGH / 2));
 		int x = (screenSize.width - WIDTH / 2) / 2;
 		int y = (screenSize.height - HIGH / 2) / 2;
+		selectColorPlayerOne = new JButton("Select Color for Player One");
+	    selectColorPlayerTwo = new JButton("Select Color for Player Two");
 		this.setLocation(x, y);
 		this.add(prepareElementsStartConfig());
 		this.setVisible(true);
@@ -116,6 +125,10 @@ public class GameConfig extends JDialog{
 		configGamePlayers
 				.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Players config")));
 		configGamePlayers.setLayout(new GridLayout(0, 3, WIDTH / 16, 0));
+		JButton selectColorPlayerOne = new JButton("Select Color for Player One");
+	    JButton selectColorPlayerTwo = new JButton("Select Color for Player Two");
+	    configGamePlayers.add(selectColorPlayerOne);
+	    configGamePlayers.add(selectColorPlayerTwo);
 		gamePlayers = new JComboBox<>();
 		gamePlayers.addItem("Player vs Player");
 		gamePlayers.addItem("Player vs Machine");
@@ -189,29 +202,49 @@ public class GameConfig extends JDialog{
      * based on the selected game players configuration.
      */
 	private void prepareActionsStartConfigGamePlayers() {
-		gamePlayers.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				@SuppressWarnings("unchecked")
-				JComboBox<String> combo = (JComboBox<String>) e.getSource();
-				String selecction = (String) combo.getSelectedItem();
-				if (selecction.equals("Player vs Player")) {
-					gamePlayerOne.setEditable(true);
-					gamePlayerTwo.setEditable(true);
-					gamePlayerOne.setText("Name player one");
-					gamePlayerTwo.setText("Name player two");
-				} else if (selecction.equals("Player vs Machine")) {
-					gamePlayerOne.setEditable(true);
-					gamePlayerTwo.setEditable(false);
-					gamePlayerOne.setText("Name player one");
-					gamePlayerTwo.setText("Machine");
-				} else {
-					gamePlayerOne.setEditable(false);
-					gamePlayerTwo.setEditable(false);
-					gamePlayerOne.setText("MachineOne");
-					gamePlayerTwo.setText("MachineTwo");
-				}
-			}
-		});
+	    gamePlayers.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	            @SuppressWarnings("unchecked")
+	            JComboBox<String> combo = (JComboBox<String>) e.getSource();
+	            String selection = (String) combo.getSelectedItem();
+	            if (selection.equals("Player vs Player")) {
+	                gamePlayerOne.setEditable(true);
+	                gamePlayerTwo.setEditable(true);
+	                gamePlayerOne.setText("Name player one");
+	                gamePlayerTwo.setText("Name player two");
+	            } else if (selection.equals("Player vs Machine")) {
+	                gamePlayerOne.setEditable(true);
+	                gamePlayerTwo.setEditable(false);
+	                gamePlayerOne.setText("Name player one");
+	                gamePlayerTwo.setText("Machine");
+	            } else {
+	                gamePlayerOne.setEditable(false);
+	                gamePlayerTwo.setEditable(false);
+	                gamePlayerOne.setText("MachineOne");
+	                gamePlayerTwo.setText("MachineTwo");
+	            }
+	            selectColorPlayerOne.addActionListener(evt -> {
+	                playerOneColor = showColorSelectionDialog("Select Color for Player One", playerOneColor);
+	                selectColorPlayerOne.setBackground(playerOneColor);
+	            });
+
+	            selectColorPlayerTwo.addActionListener(evt -> {
+	                playerTwoColor = showColorSelectionDialog("Select Color for Player Two", playerTwoColor);
+	                selectColorPlayerTwo.setBackground(playerTwoColor);
+	            });
+	            prepareActionSetPlayersTypeAndName(playerOneColor, playerTwoColor);
+	        }
+	    });
+	}
+
+	
+	private Color showColorSelectionDialog(String title, Color initialColor) {
+		JColorChooser colorChooser = new JColorChooser(initialColor);
+	    JDialog colorDialog = JColorChooser.createDialog(GameConfig.this, title, true, colorChooser,
+	            e -> {}, null);
+	    colorDialog.setVisible(true);
+	    return colorChooser.getColor();
+
 	}
 
 	
@@ -229,7 +262,7 @@ public class GameConfig extends JDialog{
 					String mode = (String) gameMode.getSelectedItem();
 					gomoku = new Gomoku(mode, size);
 					parent.dispose();
-					prepareActionSetPlayersTypeAndName();
+					prepareActionSetPlayersTypeAndName(playerOneColor, playerTwoColor);
 					gui.prepareElementsGame();
 				} catch (NumberFormatException | GomokuException ex ) {
 					Timer timer = new Timer(1000, new ActionListener() {
@@ -252,8 +285,10 @@ public class GameConfig extends JDialog{
 	
 	 /**
      * Sets up the players' types, names, and other configurations based on the selected options.
+	 * @param playerTwoColor2 
+	 * @param playerOneColor2 
      */
-	private void prepareActionSetPlayersTypeAndName() {
+	private void prepareActionSetPlayersTypeAndName(Color playerOneColor2, Color playerTwoColor2) {
 		int defaultNum = Integer.parseInt(gameSizeField.getText())*Integer.parseInt(gameSizeField.getText());;
 		try {
 			gomoku.setLimits(Integer.parseInt(limitTokens.getText()),20);

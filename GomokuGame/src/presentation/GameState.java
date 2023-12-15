@@ -80,7 +80,48 @@ class GomokuState extends JPanel {
 		}
 	}
 
+	
 	private void prepareActionsSquareClicked() {
+	    for (int i = 0; i < gomoku.getSize(); i++) {
+	        for (int j = 0; j < gomoku.getSize(); j++) {
+	            int x = i;
+	            int y = j;
+
+	            // Remove any existing MouseListeners
+	            for (MouseListener m : buttons[i][j].getMouseListeners()) {
+	                buttons[i][j].removeMouseListener(m);
+	            }
+
+	            // Simplify ActionListener setup
+	            buttons[i][j].addActionListener(e -> {
+	                int init = gomoku.getTurn();
+	                Color color = gomoku.getTokenColor(x, y);
+	                if (color == null) {
+	                    gomoku.play(gui.getMove(), x, y);
+	                    String winner = gomoku.getWinner();
+	                    if (init != gomoku.getTurn()) {
+	                        gui.prepareElementsTokensInfo();
+	                    }
+	                    if (winner != null) {
+	                        repaint();
+	                        JOptionPane.showMessageDialog(null, "The winner is: " + winner);
+	                        gui.getContentPane().removeAll();
+	                        gui.add(gui.start);
+	                    }
+	                } else {
+	                    Timer timer = new Timer(1000, evt -> JOptionPane.getRootFrame().dispose());
+	                    timer.setRepeats(false);
+	                    timer.start();
+	                    JOptionPane.showMessageDialog(null, "The square is already visited");
+	                    timer.restart();
+	                }
+	                repaint();
+	            });
+	        }
+	    }
+	}
+
+	/*private void prepareActionsSquareClicked() {
 		for (int i = 0; i < gomoku.getSize(); i++) {
 			for (int j = 0; j < gomoku.getSize(); j++) {
 				int x = i;
@@ -126,5 +167,5 @@ class GomokuState extends JPanel {
 
 			}
 		}
-	}
+	}*/
 }
