@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.concurrent.Flow.Subscription;
 
 /**
  * The NormalGame class represents a specific implementation of the Game interface for a normal Gomoku game.
@@ -9,6 +10,7 @@ package domain;
  * @version 1.8.5
  */
 public class NormalGame extends Game {
+
 
 	/**
      * Constructs a NormalGame object with the specified size and percentage of special elements.
@@ -28,9 +30,30 @@ public class NormalGame extends Game {
      */
 	public void start() {
     	numTokens = size * size;
-
 		super.start();
-	
+	}
+	public void setTimeLimit(int timeLimit) {
+		this.time = new Time(-1,this);
+	}
+	@Override
+	public void onSubscribe(Subscription subscription) {
+		this.subscription = subscription;
+		subscription.request(1);
 	}
 
+	@Override
+	public void onNext(Integer item) {
+		System.out.println("Tiempo actual: " + item + " milisegundos");
+        subscription.request(1); // Solicitar más elementos después de recibir uno
+	}
+
+	@Override
+    public void onError(Throwable throwable) {
+        System.err.println("Error: " + throwable.getMessage());
+    }
+
+    @Override
+    public void onComplete() {
+        System.out.println("La publicación ha finalizado.");
+    }
 }

@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -22,7 +24,7 @@ import domain.NormalSquare;
 import domain.Square;
 import domain.TeleportSquare;
 
-class GomokuState extends JPanel {
+public class GomokuState extends JPanel implements Subscriber<Gomoku>{
 	/**
 	 * 
 	 */
@@ -32,10 +34,13 @@ class GomokuState extends JPanel {
 	private int SIDE;
 	private Gomoku gomoku;
 	private JButton[][] buttons;
+	private Subscription subscription;
+	private Thread view;
 
 	public GomokuState(GomokuGUI gui) {
 		this.gui = gui;
 		gomoku = Gomoku.getGomoku();
+		gomoku.subscribe(this);
 		size = Math.min((3 * GomokuGUI.WIDTH) / 4, (3 * GomokuGUI.HIGH) / 4);
 		SIDE = size / gomoku.getSize();
 		buttons = new JButton[gomoku.getSize()][gomoku.getSize()];
@@ -48,6 +53,8 @@ class GomokuState extends JPanel {
 		}
 		prepareActionsSquareClicked();
 		setPreferredSize(new Dimension(1 + SIDE * gomoku.getSize(), 1 + SIDE * gomoku.getSize()));
+		view = new Thread(gomoku);
+		view.start();
 	}
 
 	public void paintComponent(Graphics g) {
@@ -127,26 +134,37 @@ class GomokuState extends JPanel {
 			}
 		}
 	}
+	
+	@Override
+	public void onSubscribe(Subscription subscription) {
+		this.subscription = subscription;
+		subscription.request(1);
+		repaint();
+	}
+
+	@Override
+	public void onNext(Gomoku item) {
+		System.out.println(item);
+        subscription.request(1); 
+        String winner = gomoku.getWinner();
+		if (winner != null) {
+			repaint();
+			JOptionPane.showMessageDialog(null, "The winner is: " + winner);
+			gui.getContentPane().removeAll();
+			gui.add(gui.start);
+
+		}
+        repaint();
+	}
+
+	@Override
+    public void onError(Throwable throwable) {
+        System.err.println("Error: " + throwable.getMessage());
+    }
+
+    @Override
+    public void onComplete() {
+        System.out.println("La publicación ha finalizado.");
+    }
 }
-/*
- * private void prepareActionsSquareClicked() { for (int i = 0; i <
- * gomoku.getSize(); i++) { for (int j = 0; j < gomoku.getSize(); j++) { int x =
- * i; int y = j; for (MouseListener m : buttons[i][j].getMouseListeners()) {
- * buttons[i][j].removeMouseListener(m); } buttons[i][j].addMouseListener(new
- * BasicButtonListener(null) { public void mouseEntered(MouseEvent e) {} public
- * void mouseExited(MouseEvent e) {} }); buttons[i][j].addActionListener(new
- * ActionListener() { public void actionPerformed(ActionEvent e) { int init =
- * gomoku.getTurn(); try { gomoku.play(x, y); String winner =
- * gomoku.getWinner(); if (init != gomoku.getTurn()) {
- * gui.prepareElementsTokensInfo(); } if (winner != null) { repaint();
- * JOptionPane.showMessageDialog(null, "The winner is: " + winner);
- * gui.getContentPane().removeAll(); gui.add(gui.start);
- * 
- * } } catch(GomokuException exe) { Timer timer = new Timer(2000, new
- * ActionListener() { public void actionPerformed(ActionEvent evt) {
- * JOptionPane.getRootFrame().dispose(); } }); timer.setRepeats(false);
- * timer.start(); JOptionPane.showMessageDialog(null, exe.getMessage());
- * timer.restart(); } repaint(); } });
- * 
- * } } }
- */
+

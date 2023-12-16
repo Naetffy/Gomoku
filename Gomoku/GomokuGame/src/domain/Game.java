@@ -3,10 +3,10 @@ package domain;
 import java.awt.Color;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Flow.*;
 
 import org.reflections.Reflections;
 
@@ -17,12 +17,14 @@ import org.reflections.Reflections;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public abstract class Game {
+public abstract class Game implements Subscriber<Integer>{
 
 	private Board board;
 	protected int size;
 	protected int numTokens;
-	protected int timeLimit;
+	protected Subscription subscription;
+	protected Time time;
+	protected Thread t;
 	protected int especialPercentageTokens;
 	protected Player playerOne;
 	protected Player playerTwo;
@@ -121,7 +123,7 @@ public abstract class Game {
 	 * 
 	 */
 	public void setTimeLimit(int timeLimit) {
-		this.timeLimit = timeLimit;
+		this.time = new Time(timeLimit,this);
 	}
 	
 	/**
@@ -166,12 +168,16 @@ public abstract class Game {
 	 * @throws GomokuException 
 	 */
 	public void play(int row, int column) throws GomokuException {
+
 		if (board.verify(row, column)) {
 			if ((turn % 2) == 0) {	
 				playerOne.play(row, column);
 			} else {
 				playerTwo.play(row, column);
 			}
+		}
+		else {
+			throw new GomokuException(GomokuException.INVALID_MOVE_POSITION);
 		}
 	}
 	
@@ -196,6 +202,7 @@ public abstract class Game {
 	public void playToken(Token token,int row, int column) throws GomokuException {
 		
 		board.playToken(token,row,column);
+		
 	}
 	
 	/**
@@ -346,14 +353,14 @@ public abstract class Game {
 	            lastSum = num;
 	        }
 	    }
-
-	    // If there are remaining special tokens, distribute them to the last token type
 	    if (numSpecials != 0) {
 	        playerOne.setQuantityTypeOfToken(lastName, numSpecials + lastSum);
 	        playerTwo.setQuantityTypeOfToken(lastName, numSpecials + lastSum);
 	    }
 	    playerOne.addToken();
 	    playerTwo.addToken();
+	    t = new Thread(time);
+	    t.start();
 	}
 
 
@@ -407,5 +414,42 @@ public abstract class Game {
 	    }
 		
 	}
+	
+	public Memento saveToMemento() {
+		return new Memento(this);
+	}
+	
+	public void restoreFromMemento(Memento m) {
+		Game memento = m.getSavedState();
+		this.board = memento.getBoard();
+		this.playerOne = memento.getPlayerOne();
+		this.playerTwo = memento.getPlayerTwo();
+		this.winner = memento.getWinner();
+		this.turn = memento.getTurn();
+	}
+
+
+	public void setPlayerToken(String token) {
+		if (turn%2==0) {
+			playerOne.addToken(token);
+		}
+		else {
+			playerTwo.addToken(token);
+		}
+	}
+
+
+	public void setWinner(String name) {
+		this.winner = name;
+	}
+
+
+	public Color getOpponentColor() {
+		if(turn%2 == 0)
+			return playerTwo.getColor();
+		else
+			return playerOne.getColor();
+	}
+	
 
 }

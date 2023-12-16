@@ -35,11 +35,15 @@ public class TemporaryToken extends Token {
     @Override
     public void act() throws GomokuException {
         if (creationTurn == null) {
+        	player.increaseScore(100);
             creationTurn = Gomoku.getGomoku().getTurn();
         } else {
             if (creationTurn + 3 == Gomoku.getGomoku().getTurn()) {
-                AlertPlay.dettach(this);
-                player.deleteToken(row, column);
+                if (square!=null && square.getToken()==this) {
+                	AlertPlay.dettach(this);
+                	square.setToken(null);
+                }
+                	
             }
         }
     }

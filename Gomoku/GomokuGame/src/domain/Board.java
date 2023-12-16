@@ -1,6 +1,7 @@
 package domain;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -365,5 +366,23 @@ public class Board {
 	public void addToken(String name) {
 		game.addToken(name);
 	}
+
+	public Token getToken(int i, int j) {
+		return boardSquares[i][j].getToken();
+	}
+	public ArrayList<int[]> getOpponentTokenPositions(Color opponentColor) {
+        ArrayList<int[]> opponentTokenPositions = new ArrayList<>();
+
+        for (int row = 0; row < size; row++) {
+            for (int column = 0; column < size; column++) {
+                if (boardSquares[row][column].getTokenColor() != null &&
+                        boardSquares[row][column].getTokenColor().equals(opponentColor)) {
+                    opponentTokenPositions.add(new int[]{row, column});
+                }
+            }
+        }
+
+        return opponentTokenPositions;
+    }
 
 }

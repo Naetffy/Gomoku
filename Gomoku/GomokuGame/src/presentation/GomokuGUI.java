@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.Flow.Subscriber;
+import java.util.concurrent.Flow.Subscription;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -14,7 +16,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 
-public class GomokuGUI extends JFrame {
+public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 
 	/**
 	 * 
@@ -25,6 +27,7 @@ public class GomokuGUI extends JFrame {
 	public static final int HIGH = (3 * screenSize.height) / 4;
 	private static final Dimension PREFERRED_DIMENSION = new Dimension(WIDTH, HIGH);
 	private Gomoku gomoku;
+	private Subscription subscription;
 
 	// Menu
 	private JMenuItem menuNew;
@@ -62,7 +65,7 @@ public class GomokuGUI extends JFrame {
 
 	private void initializeBackgroundMusic() {
 		try {
-			File audioFile = new File("Resources/Music1.wav");
+			File audioFile = new File("Resourfces/Music1.wav");
 			AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
 			backgroundMusic = AudioSystem.getClip();
 			backgroundMusic.open(audioStream);
@@ -118,6 +121,7 @@ public class GomokuGUI extends JFrame {
 
 	public void prepareElementsGame() {
 		this.gomoku = Gomoku.getGomoku();
+		gomoku.subscribe(this);
 		getContentPane().removeAll();
 		move = "NormalToken";
 		state = new GomokuState(this);
@@ -125,10 +129,10 @@ public class GomokuGUI extends JFrame {
 		player2 = new JPanel();
 		tokens1 = new JPanel();
 		Set<Class<? extends Token>> tokens = gomoku.getTokenSubtypes();
-		tokens1.setLayout(new GridLayout(tokens.size(), 2));
+		tokens1.setLayout(new GridLayout(tokens.size()+1, 2));
 		tokens1.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens player one:")));
 		tokens2 = new JPanel();
-		tokens2.setLayout(new GridLayout(tokens.size(), 2));
+		tokens2.setLayout(new GridLayout(tokens.size()+1, 2));
 		tokens2.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens player two:")));
 
 		tokensPlayer1 = new JButton[tokens.size()];
@@ -156,12 +160,15 @@ public class GomokuGUI extends JFrame {
 
 		getContentPane().revalidate();
 		getContentPane().repaint();
+		
 	}
 
 	private void prepareElementsPlayer1() {
 		tokens1.removeAll();
 		Player playerOne = gomoku.getPlayerOne();
 		HashMap<String, Integer> map = playerOne.getMap();
+		tokens1.add(new JLabel("Score "));
+		tokens1.add(new JLabel(playerOne.getScore()+""));
 		for(int i = 0; i < map.size();i++) {
 			if (gomoku.getTurn()%2 != 0)tokensPlayer1[i].setEnabled(false);
 			else if (tokensPlayer1[i].getText().equals(gomoku.getToken())) tokensPlayer1[i].setEnabled(true);
@@ -178,6 +185,8 @@ public class GomokuGUI extends JFrame {
 		tokens2.removeAll();
 		Player playerTwo = gomoku.getPlayerTwo();
 		HashMap<String, Integer> map = playerTwo.getMap();
+		tokens2.add(new JLabel("Score :"));
+		tokens2.add(new JLabel(playerTwo.getScore()+""));
 		for(int i = 0; i < map.size();i++) {
 			if (gomoku.getTurn()%2 == 0)tokensPlayer2[i].setEnabled(false);
 			else if (tokensPlayer2[i].getText().equals(gomoku.getToken())) tokensPlayer2[i].setEnabled(true);
@@ -259,5 +268,28 @@ public class GomokuGUI extends JFrame {
 	public String getMove() {
 		return move;
 	}
+
+	@Override
+	public void onSubscribe(Subscription subscription) {
+		this.subscription = subscription;
+		subscription.request(1);
+	}
+
+	@Override
+	public void onNext(Gomoku item) {
+		System.out.println(item);
+        subscription.request(1); 
+        prepareElementsTokensInfo();
+	}
+
+	@Override
+    public void onError(Throwable throwable) {
+        System.err.println("Error: " + throwable.getMessage());
+    }
+
+    @Override
+    public void onComplete() {
+        System.out.println("La publicación ha finalizado.");
+    }
 
 }

@@ -106,6 +106,7 @@ public abstract class Square implements PlayToken {
             AlertPlay.notifyObservers();
         } else {
             if (this.token != null) {
+            	this.token.setSquare(null);
                 this.token.setPosition(-1, -1);
             }
             this.token = token;
@@ -162,5 +163,9 @@ public abstract class Square implements PlayToken {
 
 	public Board getBoard() {
 		return board;
+	}
+
+	public Token getToken() {
+		return token;
 	}
 }

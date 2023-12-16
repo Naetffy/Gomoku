@@ -115,4 +115,8 @@ public abstract class Token implements PlayToken {
     }
     
     public abstract boolean valid(Token token) throws GomokuException;
+
+	public Square getSquare() {
+		return square;
+	}
 }

@@ -1,6 +1,7 @@
 package domain;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
@@ -117,6 +118,7 @@ public abstract class Player {
      * @throws GomokuException 
      */
     public void play(int row, int column) throws GomokuException {
+    	
     	String type = tokens.getFirst();
     	tokens.removeFirst();
     	try {
@@ -128,6 +130,7 @@ public abstract class Player {
     		game.playToken(actualToken, row, column);
     		quantities.put(type, quantities.get(type) - 1);
     		game.setWinner(actualToken.getRow(), actualToken.getColumn());
+    		
     		addToken();
     	}
     	catch(ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
@@ -213,5 +216,20 @@ public abstract class Player {
 	public void decreaseTurn() {
 		game.decreaseTurn();
 	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void increaseScore(int i) {
+		score += i;
+	}
 	
+	public Color getColor() {
+		return color;
+	}
+	
+	public Game getGame() {
+		return game;
+	}
 }

@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.SubmissionPublisher;
 
 /**
  * The Gomoku class represents a game of Gomoku, a two-player strategy board game.
@@ -15,9 +16,10 @@ import java.util.Set;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public class Gomoku {
+public class Gomoku extends SubmissionPublisher<Gomoku> implements Runnable{
 
 	private Game game;
+	boolean ok = true;
 
 	private static Gomoku gomokuSingleton = null;
 	
@@ -29,7 +31,6 @@ public class Gomoku {
 	public static Gomoku getGomoku() {
 		return gomokuSingleton;
 	}
-
 	/**
 	 * Constructs a Gomoku object based on the specified game type, and size.
 	 *
@@ -107,19 +108,31 @@ public class Gomoku {
 		game.setNumTokens(numTokens);
 		game.setTimeLimit(timeLimit);
 	}
-	
-	
-	/**
-	 * Initiates a sequence of moves in the game. It repeatedly instructs the game to play
-	 * until no precalculated moves are available for the current player.
-	 * @throws GomokuException 
-	 */
-	public void play() throws GomokuException {
-		int[] info = game.play();
-		if (info != null) {
-			game.play(info[0], info[1]);
-			play();
+	@Override
+	public void run(){
+		while (null == game.getWinner()) {
+			if(ok) {
+				int[] info = game.play();
+				if (info != null) {
+					try {
+						game.play(info[0], info[1]);
+						ok=true;
+						this.submit(this);
+					} catch (GomokuException e) {
+						e.printStackTrace();
+					}
+				}
+				else {
+					ok = false;
+				}
+			}
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		
 	}
 	
 	/**
@@ -132,6 +145,11 @@ public class Gomoku {
 	 */
 	public void play(int row, int column) throws GomokuException {
 		game.play(row, column);
+		ok = true;
+	}
+	
+	public void setPlayerToken(String token) {
+		game.setPlayerToken(token);
 	}
 	
 	public String getToken() {

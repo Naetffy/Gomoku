@@ -17,6 +17,7 @@ public class GomokuException extends Exception {
 	public static final String INVALID_OVERLAP_SAME = "You cant put a overlap token in some of your tokens.";
 	public static final String INVALID_TOKEN_TO_PLAY = "By the golden square you have to play 2 normal tokens this turn";
 	public static final String INVALID_OVERLAP = "You cant put a overlap token in a overlap token.";
+	public static final String INVALID_MOVE_POSITION = "Invalid move position.";
 	
 	
 	public GomokuException(String message) {

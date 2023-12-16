@@ -32,7 +32,13 @@ public class MineSquare extends Square {
 		setToken(token);
 		for(int i = row - 1; i <= row + 1;i++) {
 			for(int j = column - 1; j <= column + 1;j++) {
-				if (board.verify(i, j)) {
+				if (board.verify(i, j) &&  board.getTokenColor(i, j) != null) {
+					if (board.getTokenColor(i, j).equals(token.getColor())) {
+						token.getPlayer().increaseScore(-50);
+					}
+					else {
+						token.getPlayer().increaseScore(100);
+					}
 					board.setToken(null, i, j);
 				}
 				

@@ -38,6 +38,7 @@ public class HeavyToken extends Token {
 
 	public void act() {
 		AlertPlay.dettach(this);
+		player.increaseScore(100);
 		/*
 		ArrayList<Integer> order = new ArrayList<>();
 		boolean expanded = false;

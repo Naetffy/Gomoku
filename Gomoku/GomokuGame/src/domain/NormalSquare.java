@@ -27,6 +27,7 @@ public class NormalSquare extends Square {
     public void act() throws GomokuException {
     	AlertPlay.dettach(this);
 		setToken(token);
+		
 		board.increaseTurn();
     }
 }

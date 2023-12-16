@@ -13,13 +13,17 @@ public class OverlapToken extends Token {
 
 	public void act() throws GomokuException {
 		AlertPlay.dettach(this);
-		System.out.println("Acting Overlap");
-		if(otherToken instanceof HeavyToken) {
+		player.increaseScore(100);
+		if (otherToken == null) {
+			
+		}
+		else if(otherToken instanceof HeavyToken) {
 			int r = row; int c = column;
+			Square squareOther = otherToken.getSquare();
 			player.deleteToken(r, c);
 			Token other = new NormalToken(otherToken.getColor(),r,c);
 			other.setPlayer(otherToken.getPlayer());
-			square.setToken(other);
+			squareOther.setToken(other);
 		}
 		else if(otherToken instanceof TemporaryToken) {
 			Random random = new Random();
@@ -33,7 +37,10 @@ public class OverlapToken extends Token {
 	            j = random.nextInt(0, board.getSize());
 	        }
 	        board.playToken(otherToken, i, j);
-	        square.setToken(this);	        board.decreaseTurn();
+	        board.decreaseTurn();
+		}
+		else {
+			player.increaseScore(100);
 		}
 		
 	}
