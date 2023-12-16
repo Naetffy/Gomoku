@@ -1,0 +1,127 @@
+package domain;
+
+import java.awt.Color;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Set;
+
+public class Gomoku {
+
+	private Game game;
+
+	private static Gomoku gomokuSingleton = null;
+
+	/**
+	 * Retrieves the singleton instance of the Gomoku class.
+	 *
+	 * @return The singleton instance of the Gomoku class.
+	 */
+	public static Gomoku getGomoku() {
+		return gomokuSingleton;
+	}
+
+	/**
+	 * Constructs a Gomoku object based on the specified game type, size, and special percentage.
+	 *
+	 * @param gameType           The type of the game, represented as a String.
+	 * @param size               The size of the game, indicating the dimensions.
+	 * @param especialPercentage The percentage of special elements in the game.
+	 * @throws ClassNotFoundException    If the specified game type class is not found.
+	 * @throws NoSuchMethodException     If a matching constructor is not found in the specified class.
+	 * @throws SecurityException         If a security violation occurs during reflection.
+	 * @throws InstantiationException    If an instance of the class cannot be created (abstract class or interface).
+	 * @throws IllegalAccessException    If the constructor is not accessible due to access modifiers.
+	 * @throws IllegalArgumentException  If the provided arguments are not valid for the constructor.
+	 * @throws InvocationTargetException If an exception occurs while invoking the constructor.
+	 */
+	public Gomoku(String gameType, int size, int especialPercentage)
+			throws ClassNotFoundException, NoSuchMethodException, SecurityException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		String type = "domain." + gameType + "Game";
+		Class<?> clazz = Class.forName(type);
+		Constructor<?> constructor = clazz.getConstructor(int.class, int.class);
+		Object gameInstance = constructor.newInstance(size, especialPercentage);
+		game = (Game) gameInstance;
+		gomokuSingleton = this;
+	}
+
+	/**
+	 * Plays a move in the Gomoku game by placing a token at the specified row and column.
+	 *
+	 * @param token  The player's token to be placed on the game board.
+	 * @param row    The row where the player wants to place the token.
+	 * @param column The column where the player wants to place the token.
+	 */
+	public void play(String token, int row, int column) {
+		game.play(token, row, column);
+	}
+
+	/**
+	 * Sets the players for the Gomoku game based on the specified player types.
+	 *
+	 * @param typePlayer1 The type of player 1, represented as a String.
+	 * @param typePlayer2 The type of player 2, represented as a String.
+	 * @throws ClassNotFoundException    If the specified player type classes are not found.
+	 * @throws InstantiationException    If an instance of the player type cannot be created (abstract class or interface).
+	 * @throws IllegalAccessException    If the player type's constructor is not accessible due to access modifiers.
+	 * @throws IllegalArgumentException  If the provided arguments are not valid for the player type's constructor.
+	 * @throws InvocationTargetException If an exception occurs while invoking the player type's constructor.
+	 * @throws NoSuchMethodException     If a matching method is not found in the specified player type class.
+	 * @throws SecurityException         If a security violation occurs during reflection.
+	 */
+	public void setPlayers(String typePlayer1, String typePlayer2)
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
+		game.setPlayers(typePlayer1, typePlayer2);
+	}
+
+	/**
+	 * Sets the information for players in the Gomoku game, including names and colors.
+	 *
+	 * @param player1 The name of player 1.
+	 * @param color1  The color associated with player 1.
+	 * @param player2 The name of player 2.
+	 * @param color2  The color associated with player 2.
+	 */
+	public void setPlayersInfo(String player1, Color color1, String player2, Color color2) {
+		game.setPlayersInfo(player1, color1, player2, color2);
+	}
+
+	public int getSize() {
+		return game.getSize();
+	}
+
+	public Game getGame() {
+		return game;
+	}
+
+	public Color getTokenColor(int row, int column) {
+		return game.getTokenColor(row, column);
+	}
+
+	public String getWinner() {
+		return game.getWinner();
+	}
+
+	public HashMap<String, Integer> getPlayerTokens() {
+		return game.getPlayerTokens();
+	}
+
+	public Player getPlayerOne() {
+		return game.getPlayerOne();
+	}
+
+	public Player getPlayerTwo() {
+		return game.getPlayerTwo();
+	}
+
+	public int getTurn() {
+		return game.getTurn();
+	}
+
+	public Set<Class> getTokenSubtypes() {
+		return game.getTokenSubtypes();
+	}
+
+}
