@@ -33,7 +33,7 @@ public class OverlapToken extends Token {
 	            j = random.nextInt(0, board.getSize());
 	        }
 	        board.playToken(otherToken, i, j);
-	        board.decreaseTurn();
+	        square.setToken(this);	        board.decreaseTurn();
 		}
 		
 	}
