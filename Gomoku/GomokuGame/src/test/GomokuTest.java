@@ -105,7 +105,6 @@ class GomokuTest {
 			fail("The test should pass");
 		}
 	}
-
 	@Test
 	void testPutSomeNormalsTokensInSomePositions() {
 		try {
@@ -497,7 +496,7 @@ class GomokuTest {
 			fail("A error is dont expected");
 		}
 	}
-	
+	//Desde aca
 	@Test
 	void testPutSomeHeavyTokensInSomePositions() {
 		try {
@@ -831,6 +830,23 @@ class GomokuTest {
 		} catch(GomokuException e) {
 			fail("A error is dont expected");
 		}
+	}
+	//Hasta aca
+	@Test
+	void testPutSomeTemporaryTokensInSomePositions() {
+		try {
+			gomoku.setPlayerToken("TemporaryToken");
+			assertEquals("TemporaryToken",gomoku.getToken());
+			gomoku.play(0, 0);
+			gomoku.setPlayerToken("TemporaryToken");
+			assertEquals("TemporaryToken",gomoku.getToken());
+			gomoku.play(0, 1);
+			
+		} catch (GomokuException e) {
+			fail("A exception is not expected");
+		}
+		assertEquals(gomoku.getTokenColor(0, 0), new Color(0, 0, 0));
+		assertEquals(gomoku.getTokenColor(0, 1), new Color(255, 255, 255));
 	}
 	
 	@Test
