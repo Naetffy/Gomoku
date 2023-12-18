@@ -1,5 +1,7 @@
 package domain;
 
+import java.awt.Color;
+
 /**
  * The MineSquare class represents a specialized type of Square that, when activated,
  * removes tokens from the adjacent squares and increases the turn count on the game board.
@@ -32,16 +34,21 @@ public class MineSquare extends Square {
 		setToken(token);
 		for(int i = row - 1; i <= row + 1;i++) {
 			for(int j = column - 1; j <= column + 1;j++) {
-				if (board.verify(i, j) &&  board.getTokenColor(i, j) != null) {
-					if (board.getTokenColor(i, j).equals(token.getColor())) {
+				Color c = board.getTokenColor(i, j);
+				if (c != null) {
+					if (c.equals(token.getColor())) {
 						token.getPlayer().increaseScore(-50);
 					}
 					else {
 						token.getPlayer().increaseScore(100);
 					}
-					board.setToken(null, i, j);
 				}
-				
+			}
+		}
+		for(int i = row - 1; i <= row + 1;i++) {
+			for(int j = column - 1; j <= column + 1;j++) {
+				if(board.verify(i,j))
+					board.setToken(null, i, j);
 			}
 		}
 		board.increaseTurn();

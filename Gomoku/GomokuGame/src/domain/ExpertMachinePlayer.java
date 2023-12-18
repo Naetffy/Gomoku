@@ -11,6 +11,12 @@ public class ExpertMachinePlayer extends MachinePlayer {
 
    @Override
    public int[] play() {
+	   try {
+			Thread.sleep(timeRetard);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
        return miniMax();
    }
 

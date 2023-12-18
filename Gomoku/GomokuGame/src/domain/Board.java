@@ -1,6 +1,7 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -10,7 +11,7 @@ import java.util.Random;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public class Board {
+public class Board  implements Serializable{
 
 	private int size;
 	private Square[][] boardSquares;

@@ -6,7 +6,7 @@ package domain;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public interface PlayToken {
+public interface PlayToken{
 
     /**
      * Performs the action associated with playing a token in the game.

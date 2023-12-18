@@ -1,6 +1,7 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
@@ -17,7 +18,7 @@ import org.reflections.Reflections;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public abstract class Square implements PlayToken {
+public abstract class Square implements PlayToken, Serializable {
 
     protected Token token;
     public static Set<Class<? extends Square>> subTypes = null;

@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * @version 1.8.5
  */
 public abstract class MachinePlayer extends Player {
-
+	protected int timeRetard = 1000;
 	public abstract int[] play();
 
 	public abstract int[] miniMax();

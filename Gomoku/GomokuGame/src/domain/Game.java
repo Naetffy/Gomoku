@@ -1,6 +1,7 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -17,14 +18,15 @@ import org.reflections.Reflections;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public abstract class Game implements Subscriber<Integer>{
+public abstract class Game implements Subscriber<Integer>,Serializable{
+
 
 	private Board board;
 	protected int size;
 	protected int numTokens;
-	protected Subscription subscription;
+	protected  transient Subscription subscription;
 	protected Time time;
-	protected Thread t;
+	protected transient Thread t;
 	protected int especialPercentageTokens;
 	protected Player playerOne;
 	protected Player playerTwo;
@@ -77,13 +79,13 @@ public abstract class Game implements Subscriber<Integer>{
 	public void setPlayers(String typePlayer1, String typePlayer2)
 	        throws ClassNotFoundException, InstantiationException, IllegalAccessException,
 	        IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-	    String type = "domain." + typePlayer1 + "Player";
+	    String type = "domain." + typePlayer1;
 	    Class<?> clazz = Class.forName(type);
 	    Constructor<?> constructor = clazz.getConstructor();
 	    Object playerInstance = constructor.newInstance();
 	    playerOne = (Player) playerInstance;
 
-	    type = "domain." + typePlayer2 + "Player";
+	    type = "domain." + typePlayer2;
 	    clazz = Class.forName(type);
 	    constructor = clazz.getConstructor();
 	    playerInstance = constructor.newInstance();
@@ -414,19 +416,6 @@ public abstract class Game implements Subscriber<Integer>{
 	    }
 		
 	}
-	
-	public Memento saveToMemento() {
-		return new Memento(this);
-	}
-	
-	public void restoreFromMemento(Memento m) {
-		Game memento = m.getSavedState();
-		this.board = memento.getBoard();
-		this.playerOne = memento.getPlayerOne();
-		this.playerTwo = memento.getPlayerTwo();
-		this.winner = memento.getWinner();
-		this.turn = memento.getTurn();
-	}
 
 
 	public void setPlayerToken(String token) {
@@ -451,5 +440,18 @@ public abstract class Game implements Subscriber<Integer>{
 			return playerOne.getColor();
 	}
 	
+	public Time getTime() {
+		return time;
+	}
+
+
+	public boolean verify(int i, int j) {
+		return board.verify(i, j);
+	}
+
+
+	public int getTokenValue(int i, int j) {
+		return board.getToken(i, j).getValue();
+	}
 
 }

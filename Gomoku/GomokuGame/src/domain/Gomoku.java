@@ -1,6 +1,7 @@
 package domain;
 
 import java.awt.Color;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.concurrent.SubmissionPublisher;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public class Gomoku extends SubmissionPublisher<Gomoku> implements Runnable{
+public class Gomoku extends SubmissionPublisher<Gomoku> implements Runnable, Serializable{
 
 	private Game game;
 	boolean ok = true;
@@ -240,6 +241,51 @@ public class Gomoku extends SubmissionPublisher<Gomoku> implements Runnable{
 
 	public Square getSquare(int i, int j) {
 		return game.getSquare(i,j);
+	}
+	
+	public Time getTime() {
+		return game.getTime();
+	}
+	/**
+	* Saves the current game state to a specified file.
+	*
+	* @param nombreArchivo The name of the file to save the game state.
+	*/
+	public void guardarPartida(String nombreArchivo) {
+	    ObjectOutputStream salida = null;
+	    try {
+	        salida = new ObjectOutputStream(new FileOutputStream(nombreArchivo));
+	        salida.writeObject(this);
+	        salida.flush(); 
+	        System.out.println("Partida guardada con éxito. Ruta: " + new File(nombreArchivo).getAbsolutePath());
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } finally {
+	        if (salida != null) {
+	            try {
+	                salida.close();
+	            } catch (IOException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+	}
+	/**
+ 	* Loads a game state from a specified file and returns a Vintage object.
+ 	*
+ 	* @param nombreArchivo The name of the file to load the game state.
+ 	* @return A Vintage object representing the loaded game state.
+	*/
+	public static Gomoku cargarPartida(String nombreArchivo) {
+		Gomoku partidaCargada = null;
+	    try {
+	    	ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(nombreArchivo));
+	    	partidaCargada = (Gomoku) entrada.readObject();
+
+	    } catch (IOException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    } 
+	    return partidaCargada;
 	}
 
 }

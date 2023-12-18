@@ -1,8 +1,9 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.concurrent.SubmissionPublisher;
 
-public class Time extends SubmissionPublisher<Integer> implements Runnable{
+public class Time extends SubmissionPublisher<Integer> implements Runnable,Serializable{
 
 	private int limitMili; 
 	private Game game;
@@ -51,9 +52,6 @@ public class Time extends SubmissionPublisher<Integer> implements Runnable{
 					}
 				}
 			}
-			
-			System.out.println("Time player one: "+timePlayerOneMili);
-			System.out.println("Time player two: "+timePlayerTwoMili);
 			if(timePlayerOneMili < 0) {
 				this.submit(timePlayerOneMili);
 			}

@@ -1,12 +1,13 @@
 package domain;
 
+import java.io.Serializable;
 
 /*
  * 
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public class GomokuException extends Exception {
+public class GomokuException extends Exception  implements Serializable{
 	
 	/**
 	 * 
@@ -18,6 +19,7 @@ public class GomokuException extends Exception {
 	public static final String INVALID_TOKEN_TO_PLAY = "By the golden square you have to play 2 normal tokens this turn";
 	public static final String INVALID_OVERLAP = "You cant put a overlap token in a overlap token.";
 	public static final String INVALID_MOVE_POSITION = "Invalid move position.";
+	public static final String INVALID_MOVE_NO_TOKENS = "You cant make this move beacose you dont have the token";
 	
 	
 	public GomokuException(String message) {

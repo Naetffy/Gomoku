@@ -1,6 +1,7 @@
 package domain;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Set;
 import org.reflections.Reflections;
 
@@ -12,7 +13,7 @@ import org.reflections.Reflections;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public abstract class Token implements PlayToken {
+public abstract class Token implements PlayToken, Serializable {
 
     protected Color color;
     protected int row;

@@ -7,15 +7,16 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Subscription;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.Timer;
@@ -25,6 +26,7 @@ import javax.swing.border.TitledBorder;
 
 import domain.Gomoku;
 import domain.GomokuException;
+import domain.Player;
 
 
 /**
@@ -48,9 +50,12 @@ public class GameConfig extends JDialog{
 	private JComboBox<String> gamePlayers;
 	private JTextField gamePlayerOne;
 	private JTextField gamePlayerTwo;
-
+	private JComboBox<String> machine1;
+	private JComboBox<String> machine2;
+	
 	private JTextField gameSizeField;
-	private JSlider gameSlider;
+	private JSlider gameSlider1;
+	private JSlider gameSlider2;
 	private JButton createGame;
 	
 	
@@ -71,22 +76,22 @@ public class GameConfig extends JDialog{
 	public GameConfig(Dimension screenSize,int WIDTH, int HIGH,GomokuGUI gui) {
 		this.gui = gui;
 		this.WIDTH = WIDTH;
-		this.setSize(new Dimension(WIDTH / 2, HIGH / 2));
-		int x = (screenSize.width - WIDTH / 2) / 2;
-		int y = (screenSize.height - HIGH / 2) / 2;
+		this.setSize(new Dimension(3 * WIDTH / 4 , 3 * HIGH / 4));
+		int x = (screenSize.width - 3 * WIDTH / 4) / 2;
+		int y = (screenSize.height - 3 * HIGH / 4) / 2;
 		this.setLocation(x, y);
-		this.add(prepareElementsStartConfig());
+		this.add(new JScrollPane(prepareElementsStartConfig()));
 		this.setVisible(true);
 		prepareActionsCreateGame(this);
 	}
 	
 	private JPanel prepareElementsStartConfig() {
 		JPanel config = new JPanel();
-		config.setLayout(new GridLayout(4, 1));
+		config.setLayout(new GridLayout(0, 1));
 		config.add(prepareElementsStartConfigGameSize());
 		config.add(prepareElementsStartConfigGameMode());
 		config.add(prepareElementsStartConfigGamePlayers());
-		// config.add(prepareElementsStartConfigGameSlider());
+		config.add(prepareElementsStartConfigGamesSlider());
 		config.add(prepareElementsStartCreateGame());
 		return config;
 	}
@@ -140,22 +145,46 @@ public class GameConfig extends JDialog{
 		configGamePlayers.add(gamePlayers);
 		configGamePlayers.add(gamePlayerOne);
 		configGamePlayers.add(gamePlayerTwo);
+		
+		Set<Class<? extends Player>> c = Player.getPlayerSubtypes();
+		machine1 = new JComboBox<>();
+		machine2 = new JComboBox<>();
+		for(Class<? extends Player> x : c) {
+			String name = x.getSimpleName();
+			if (!name.equals("NormalPlayer")&&!name.equals("MachinePlayer")) {
+				machine1.addItem(name);
+				machine2.addItem(name);
+			}
+		} 
+		configGamePlayers.add(new JLabel(""));
+		configGamePlayers.add(machine1);
+		configGamePlayers.add(machine2);
+		machine1.setEnabled(false);
+        machine2.setEnabled(false);
 		prepareActionsStartConfigGamePlayers();
 		return configGamePlayers;
 	}
 
-	@SuppressWarnings("unused")
-	private JPanel prepareElementsStartConfigGameSlider() {
+	private JPanel prepareElementsStartConfigGamesSlider() {
 		JPanel configGameSlider = new JPanel();
 		configGameSlider.setBorder(
 				new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Especial percentage (%)")));
 		configGameSlider.setLayout(new FlowLayout(FlowLayout.LEFT));
-		gameSlider = new JSlider(0, 100, 20);
-		gameSlider.setMajorTickSpacing(20);
-		gameSlider.setMinorTickSpacing(5);
-		gameSlider.setPaintTicks(true);
-		gameSlider.setPaintLabels(true);
-		configGameSlider.add(gameSlider);
+		configGameSlider.setLayout(new GridLayout(2,2,30,0));
+		gameSlider1 = new JSlider(0, 100, 20);
+		gameSlider1.setMajorTickSpacing(20);
+		gameSlider1.setMinorTickSpacing(5);
+		gameSlider1.setPaintTicks(true);
+		gameSlider1.setPaintLabels(true);
+		gameSlider2 = new JSlider(0, 100, 20);
+		gameSlider2.setMajorTickSpacing(20);
+		gameSlider2.setMinorTickSpacing(5);
+		gameSlider2.setPaintTicks(true);
+		gameSlider2.setPaintLabels(true);
+		configGameSlider.add(new JLabel("Percentage of tokens"));
+		configGameSlider.add(new JLabel("Percentage of squares"));
+		configGameSlider.add(gameSlider1);
+		configGameSlider.add(gameSlider2);
 		return configGameSlider;
 	}
 
@@ -211,17 +240,23 @@ public class GameConfig extends JDialog{
 	            String selection = (String) combo.getSelectedItem();
 	            if (selection.equals("Player vs Player")) {
 	                gamePlayerOne.setEditable(true);
+	                machine1.setEnabled(false);
+	                machine2.setEnabled(false);
 	                gamePlayerTwo.setEditable(true);
 	                gamePlayerOne.setText("Name player one");
 	                gamePlayerTwo.setText("Name player two");
 	            } else if (selection.equals("Player vs Machine")) {
 	                gamePlayerOne.setEditable(true);
 	                gamePlayerTwo.setEditable(false);
+	                machine1.setEnabled(false);
+	                machine2.setEnabled(true);
 	                gamePlayerOne.setText("Name player one");
 	                gamePlayerTwo.setText("Machine");
 	            } else {
 	                gamePlayerOne.setEditable(false);
 	                gamePlayerTwo.setEditable(false);
+	                machine1.setEnabled(true);
+	                machine2.setEnabled(true);
 	                gamePlayerOne.setText("MachineOne");
 	                gamePlayerTwo.setText("MachineTwo");
 	            }
@@ -292,30 +327,32 @@ public class GameConfig extends JDialog{
 			gomoku.setLimits((defaultNum*defaultNum)/2,20);
 		}
 		String players = (String) gamePlayers.getSelectedItem();
+		String m1 = (String) machine1.getSelectedItem();
+		String m2 = (String) machine2.getSelectedItem();
 		if (players.equals("Player vs Player")) {
 			try {
-				gomoku.setPlayers("Normal", "Normal");
+				gomoku.setPlayers("NormalPlayer", "NormalPlayer");
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
 			}
 		} else if (players.equals("Player vs Machine")) {
 			try {
-				gomoku.setPlayers("Normal", "AggressiveMachine");
+				gomoku.setPlayers("NormalPlayer", m2);
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
 			}
 		} else {
 			try {
-				gomoku.setPlayers("ScaryMachine", "ScaryMachine");
+				gomoku.setPlayers(m1, m2);
 			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				e.printStackTrace();
 			}
 		}
 		gomoku.setPlayersInfo(gamePlayerOne.getText(),playerOneColor, gamePlayerTwo.getText(),playerTwoColor);
-		gomoku.setEspecialInfo(5, 5);
+		gomoku.setEspecialInfo(gameSlider1.getValue(), gameSlider2.getValue());
 	}
 
 }

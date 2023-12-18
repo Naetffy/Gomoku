@@ -2,6 +2,7 @@ package domain;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
@@ -18,13 +19,14 @@ import org.reflections.Reflections;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public abstract class Player {
+public abstract class Player implements Serializable{
     private String name;
     protected Color color;
     protected HashMap<String, Integer> quantities;
     protected Game game;
     protected ArrayDeque<String> tokens;
     private int score;
+    private int maxScore=1;
 
     // Static variable to store player subtypes
     public static Set<Class<? extends Player>> subTypes = null;
@@ -122,6 +124,7 @@ public abstract class Player {
     	String type = tokens.getFirst();
     	tokens.removeFirst();
     	try {
+    		if(quantities.get(type) <= 0) throw new GomokuException(GomokuException.INVALID_MOVE_NO_TOKENS); 
     		Class<?> clazz = Class.forName("domain."+type);
     		Constructor<?> constructor = clazz.getConstructor(Color.class, int.class, int.class);
     		Object tokenInstance = constructor.newInstance(color, row, column);
@@ -129,6 +132,7 @@ public abstract class Player {
     		actualToken.setPlayer(this);
     		game.playToken(actualToken, row, column);
     		quantities.put(type, quantities.get(type) - 1);
+    		
     		game.setWinner(actualToken.getRow(), actualToken.getColumn());
     		
     		addToken();
@@ -223,6 +227,21 @@ public abstract class Player {
 
 	public void increaseScore(int i) {
 		score += i;
+		if (score > 1000*maxScore) {
+			 Set<Class<? extends Token>> tokens = Token.getTokenSubtypes();
+	         Random r = new Random();
+	         int rn = r.nextInt(tokens.size());
+	         int j = 0;
+	         for (Class<? extends Token> token : tokens) {
+	        	 String name = token.getSimpleName();
+	        	 if (j == rn) {
+	        		 increaseQuantityToken(name, 1);
+	        		 break;
+	        	 }
+	             j++;
+	         }
+	         maxScore ++;
+		}
 	}
 	
 	public Color getColor() {
@@ -231,5 +250,9 @@ public abstract class Player {
 	
 	public Game getGame() {
 		return game;
+	}
+
+	public void setWinner(int r, int c) {
+		game.setWinner(r, c);
 	}
 }

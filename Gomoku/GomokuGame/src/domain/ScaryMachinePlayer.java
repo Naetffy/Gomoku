@@ -9,9 +9,8 @@ public class ScaryMachinePlayer extends MachinePlayer {
     @Override
     public int[] play() {
     	try {
-			Thread.sleep(1000);
+			Thread.sleep(timeRetard);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         return miniMax();
@@ -35,12 +34,12 @@ public class ScaryMachinePlayer extends MachinePlayer {
 
     private int[] evaluateMovesWithSafety(Board board, ArrayList<int[]> opponentTokenPositions) {
         int[] bestMove = null;
-        int bestEvaluation = Integer.MIN_VALUE;
+        double bestEvaluation = Double.MIN_VALUE;
 
         for (int row = 0; row < board.getSize(); row++) {
             for (int column = 0; column < board.getSize(); column++) {
                 if (board.getTokenColor(row, column) == null) {
-                    int evaluation = evaluateMove(board, row, column, opponentTokenPositions);
+                    double evaluation = evaluateMove(board, row, column, opponentTokenPositions);
 
                     if (evaluation > bestEvaluation) {
                         bestEvaluation = evaluation;
@@ -53,8 +52,8 @@ public class ScaryMachinePlayer extends MachinePlayer {
         return bestMove;
     }
 
-    private int evaluateMove(Board board, int row, int column, ArrayList<int[]> opponentTokenPositions) {
-        int safetyScore = 0;
+    private double evaluateMove(Board board, int row, int column, ArrayList<int[]> opponentTokenPositions) {
+        double safetyScore = 0;
 
         for (int[] opponentPosition : opponentTokenPositions) {
             double distance = calculateDistance(row, column, opponentPosition[0], opponentPosition[1]);

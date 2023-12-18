@@ -11,12 +11,13 @@ import java.util.concurrent.Flow.Subscription;
 
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 
-public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
+public class GomokuGUI extends JFrame implements Subscriber<Gomoku> {
 
 	/**
 	 * 
@@ -53,8 +54,10 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 	private JPanel player2;
 	private JButton[] tokensPlayer2;
 	JPanel tokens2;
+	private JPanel time;
 
 	private Clip backgroundMusic;
+	private JMenuItem menuFinish;
 
 	private GomokuGUI() {
 		prepareElements();
@@ -65,7 +68,7 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 
 	private void initializeBackgroundMusic() {
 		try {
-			File audioFile = new File("Resourfces/Music1.wav");
+			File audioFile = new File("sResources/Music1.wav");
 			AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
 			backgroundMusic = AudioSystem.getClip();
 			backgroundMusic.open(audioStream);
@@ -89,17 +92,21 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 		prepareElementsStart();
 		getContentPane().add(start);
 		setResizable(false);
+		prepareMenuActions();
 	}
 
 	private JMenuBar prepareElementsMenu() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu gameMenu = new JMenu("File");
 
+		menuFinish = new JMenuItem("Finish");
 		menuNew = new JMenuItem("New");
 		menuOpen = new JMenuItem("Open");
 		menuSave = new JMenuItem("Save");
+		
 		menuClose = new JMenuItem("Close");
 
+		gameMenu.add(menuFinish);
 		gameMenu.add(menuNew);
 		gameMenu.add(menuOpen);
 		gameMenu.add(menuSave);
@@ -125,15 +132,16 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 		getContentPane().removeAll();
 		move = "NormalToken";
 		state = new GomokuState(this);
+		time = new TimeGUI();
 		player1 = new JPanel();
 		player2 = new JPanel();
 		tokens1 = new JPanel();
 		Set<Class<? extends Token>> tokens = gomoku.getTokenSubtypes();
-		tokens1.setLayout(new GridLayout(tokens.size()+1, 2));
-		tokens1.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens player one:")));
+		tokens1.setLayout(new GridLayout(0, 2));
+		tokens1.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Info player one")));
 		tokens2 = new JPanel();
-		tokens2.setLayout(new GridLayout(tokens.size()+1, 2));
-		tokens2.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Tokens player two:")));
+		tokens2.setLayout(new GridLayout(0, 2));
+		tokens2.setBorder(new CompoundBorder(new EmptyBorder(0, 0, 0, 0), new TitledBorder("Info player two")));
 
 		tokensPlayer1 = new JButton[tokens.size()];
 		tokensPlayer2 = new JButton[tokens.size()];
@@ -149,10 +157,13 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 		getContentPane().setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
-		gbc.gridy = 0;
+		gbc.gridy = 1;
 		getContentPane().add(player1, gbc);
 
 		gbc.gridx = 1;
+		gbc.gridy = 0;
+		getContentPane().add(time, gbc);
+		gbc.gridy = 1;
 		getContentPane().add(state, gbc);
 
 		gbc.gridx = 2;
@@ -160,19 +171,24 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 
 		getContentPane().revalidate();
 		getContentPane().repaint();
-		
+
 	}
 
 	private void prepareElementsPlayer1() {
 		tokens1.removeAll();
 		Player playerOne = gomoku.getPlayerOne();
 		HashMap<String, Integer> map = playerOne.getMap();
+		tokens1.add(new JLabel("Name :"));
+		tokens1.add(new JLabel(playerOne.getName()));
 		tokens1.add(new JLabel("Score "));
-		tokens1.add(new JLabel(playerOne.getScore()+""));
-		for(int i = 0; i < map.size();i++) {
-			if (gomoku.getTurn()%2 != 0)tokensPlayer1[i].setEnabled(false);
-			else if (tokensPlayer1[i].getText().equals(gomoku.getToken())) tokensPlayer1[i].setEnabled(true);
-			else tokensPlayer1[i].setEnabled(false);
+		tokens1.add(new JLabel(playerOne.getScore() + ""));
+		for (int i = 0; i < map.size(); i++) {
+			if (gomoku.getTurn() % 2 != 0)
+				tokensPlayer1[i].setEnabled(false);
+			else if (tokensPlayer1[i].getText().equals(gomoku.getToken()))
+				tokensPlayer1[i].setEnabled(true);
+			else
+				tokensPlayer1[i].setEnabled(false);
 			tokens1.add(tokensPlayer1[i]);
 			tokens1.add(new JLabel(": " + map.get(tokensPlayer1[i].getText())));
 		}
@@ -185,12 +201,17 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 		tokens2.removeAll();
 		Player playerTwo = gomoku.getPlayerTwo();
 		HashMap<String, Integer> map = playerTwo.getMap();
+		tokens2.add(new JLabel("Name :"));
+		tokens2.add(new JLabel(playerTwo.getName()));
 		tokens2.add(new JLabel("Score :"));
-		tokens2.add(new JLabel(playerTwo.getScore()+""));
-		for(int i = 0; i < map.size();i++) {
-			if (gomoku.getTurn()%2 == 0)tokensPlayer2[i].setEnabled(false);
-			else if (tokensPlayer2[i].getText().equals(gomoku.getToken())) tokensPlayer2[i].setEnabled(true);
-			else tokensPlayer2[i].setEnabled(false);
+		tokens2.add(new JLabel(playerTwo.getScore() + ""));
+		for (int i = 0; i < map.size(); i++) {
+			if (gomoku.getTurn() % 2 == 0)
+				tokensPlayer2[i].setEnabled(false);
+			else if (tokensPlayer2[i].getText().equals(gomoku.getToken()))
+				tokensPlayer2[i].setEnabled(true);
+			else
+				tokensPlayer2[i].setEnabled(false);
 			tokens2.add(tokensPlayer2[i]);
 			tokens2.add(new JLabel(": " + map.get(tokensPlayer2[i].getText())));
 		}
@@ -255,6 +276,63 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 		}
 	}
 
+	/**
+	 * Prepares the action listeners for menu items, such as creating a new game,
+	 * saving, opening, and closing the application.
+	 */
+	private void prepareMenuActions() {
+		GomokuGUI parent = this;
+		menuFinish.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				getContentPane().removeAll();
+				add(start);
+
+			}
+			
+		});
+		
+		menuNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JDialog gameConfig = new GameConfig(screenSize, WIDTH, HIGH, parent);
+			}
+		});
+		
+		menuSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Gomoku data", "gom");
+				chooser.setFileFilter(filter);
+				int returnVal = chooser.showSaveDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					JOptionPane.showMessageDialog(null, "You are trying to save the game with the next name: "
+							+ chooser.getSelectedFile().getName());
+					gomoku.guardarPartida(chooser.getSelectedFile().getAbsolutePath() + ".gom");
+				}
+			}
+		});
+		menuOpen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser = new JFileChooser();
+				FileNameExtensionFilter filter = new FileNameExtensionFilter("Gomoku data", "gom");
+				chooser.setFileFilter(filter);
+				int returnVal = chooser.showOpenDialog(null);
+				if (returnVal == JFileChooser.APPROVE_OPTION) {
+					JOptionPane.showMessageDialog(null, "You are trying to open the file with the next name: "
+							+ chooser.getSelectedFile().getName());
+					gomoku = Gomoku.cargarPartida(chooser.getSelectedFile().getAbsolutePath());
+					prepareElementsGame();
+				}
+			}
+		});
+
+		menuClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				closeOption();
+			}
+		});
+	}
+
 	private void closeOption() {
 		int yesNo = JOptionPane.showOptionDialog(null, "Are you sure you want exit?", "Warning",
 				JOptionPane.YES_NO_OPTION, JOptionPane.CANCEL_OPTION, null, null, "No");
@@ -277,19 +355,18 @@ public class GomokuGUI extends JFrame implements Subscriber<Gomoku>{
 
 	@Override
 	public void onNext(Gomoku item) {
-		System.out.println(item);
-        subscription.request(1); 
-        prepareElementsTokensInfo();
+		subscription.request(1);
+		prepareElementsTokensInfo();
 	}
 
 	@Override
-    public void onError(Throwable throwable) {
-        System.err.println("Error: " + throwable.getMessage());
-    }
+	public void onError(Throwable throwable) {
+		System.err.println("Error: " + throwable.getMessage());
+	}
 
-    @Override
-    public void onComplete() {
-        System.out.println("La publicación ha finalizado.");
-    }
+	@Override
+	public void onComplete() {
+		System.out.println("La publicación ha finalizado.");
+	}
 
 }

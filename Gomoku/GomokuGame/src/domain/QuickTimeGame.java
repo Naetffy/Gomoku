@@ -36,7 +36,6 @@ public class QuickTimeGame extends Game {
 
 	@Override
 	public void onNext(Integer item) {
-		System.out.println("Tiempo actual: " + item + " milisegundos");
 		if (item < 0) {
 			if (turn % 2 == 0) {
 				winner = playerTwo.getName();

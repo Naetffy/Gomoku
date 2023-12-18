@@ -24,6 +24,7 @@ public class OverlapToken extends Token {
 			Token other = new NormalToken(otherToken.getColor(),r,c);
 			other.setPlayer(otherToken.getPlayer());
 			squareOther.setToken(other);
+			otherToken.getPlayer().setWinner(r,c);
 		}
 		else if(otherToken instanceof TemporaryToken) {
 			Random random = new Random();

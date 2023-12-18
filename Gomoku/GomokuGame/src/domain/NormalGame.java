@@ -43,7 +43,6 @@ public class NormalGame extends Game {
 
 	@Override
 	public void onNext(Integer item) {
-		System.out.println("Tiempo actual: " + item + " milisegundos");
         subscription.request(1); // Solicitar más elementos después de recibir uno
 	}
 

@@ -1,5 +1,6 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -9,16 +10,13 @@ import java.util.ArrayList;
  * @author Juan Daniel Murcia - Mateo Forero Fuentes
  * @version 1.8.5
  */
-public class AlertPlay {
+public class AlertPlay  implements Serializable{
 
     // Flag to indicate if the observer list is currently being iterated
 	private static boolean iterating = false;
 	
     // List to store the registered observers
 	private static ArrayList<PlayToken> observers =  new ArrayList<>();
-	
-    // List to store observers that need to be removed after the iteration
-	private static ArrayList<PlayToken> toRemove =  new ArrayList<>();
 	
 	/**
      * Attaches a PlayToken observer to the list.
@@ -37,12 +35,12 @@ public class AlertPlay {
      * @param observer The PlayToken observer to be detached.
      */
 	public static void  dettach(PlayToken observer) {
-		if(!iterating) {
-			observers.remove(observer);
+		int index = observers.indexOf(observer);
+		observers.remove(index);
+		if(iterating) {
+			observers.add(index,null);
 		}
-		else {
-			toRemove.add(observer);
-		}
+		
 	}
 	
 	
@@ -54,7 +52,7 @@ public class AlertPlay {
 	public static void notifyObservers() throws GomokuException {
 		iterating = true;
 		for (int i = 0; i < observers.size(); i++) {
-			if (!toRemove.contains(observers.get(i))) {
+			if (observers.get(i) != null) {
 				observers.get(i).act();
 			}
 		}
@@ -67,10 +65,10 @@ public class AlertPlay {
      * Removes observers marked for removal from the list.
      */
 	public static void toRemove() {
-		for(PlayToken c : toRemove) {
-			dettach(c);
+		while(observers.contains(null)) {
+			observers.remove(null);			
 		}
-		toRemove = new ArrayList<>();
+
 	}
 
 	
